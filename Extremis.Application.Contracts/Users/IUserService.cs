@@ -4,5 +4,7 @@ namespace Extremis.Users;
 
 public interface IUserService
 {
-    Task<IResult> UpdateDeveloperInfo(UpdateAppUserDto infoDto, string userId);
+    Task<IResult<UserStatusDto>> GetUserStatusAsync(string userId);
+    Task<IResult> UpdateUserStatusAsync(UpdateUserStatusRequestDto request, string userId);
+    Task<IResult> UpdateDeveloperInfoAsync(UpdateAppUserRequestDto request, string userId);
 }

@@ -1,6 +1,6 @@
 ﻿namespace Extremis.Users;
 
-public class UpdateAppUserDto
+public class UpdateAppUserRequestDto
 {
     public string Id { get; set; }
     
