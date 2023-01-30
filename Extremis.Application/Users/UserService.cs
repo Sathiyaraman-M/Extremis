@@ -57,7 +57,34 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<IResult> UpdateDeveloperInfoAsync(UpdateAppUserRequestDto request, string userId)
+    public async Task<IResult<UserInfoDto>> GetUserInfoAsync(string userId)
+    {
+        try
+        {
+            var appUser = await _userManager.FindByIdAsync(userId);
+            if (appUser == null)
+            {
+                throw new Exception("User Not Found!");
+            }
+            var userInfo = new UserInfoDto()
+            {
+                UserName = appUser.UserName,
+                FullName = appUser.FullName,
+                DateOfBirth = appUser.DateOfBirth,
+                City = appUser.City,
+                Country = appUser.Country,
+                SingleLineDescription = appUser.SingleLineDescription,
+                Bio = appUser.Bio
+            };
+            return await Result<UserInfoDto>.SuccessAsync(userInfo);
+        }
+        catch (Exception e)
+        {
+            return await Result<UserInfoDto>.FailAsync(e.Message);
+        }
+    }
+
+    public async Task<IResult> UpdateUserInfoAsync(UpdateUserInfoRequestDto request, string userId)
     {
         try
         {

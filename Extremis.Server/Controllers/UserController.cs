@@ -10,11 +10,18 @@ public class UserController : ControllerBase
 
     public UserController(IUserService userService) => _userService = userService;
     
-    [HttpPost("update")]
-    public async Task<IActionResult> UpdateUserInfo(UpdateAppUserRequestDto request)
+    [HttpGet("info")]
+    public async Task<IActionResult> GetUserInfo()
     {
         var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
-        return Ok(await _userService.UpdateDeveloperInfoAsync(request, userId));
+        return Ok(await _userService.GetUserInfoAsync(userId));
+    }
+    
+    [HttpPost("info")]
+    public async Task<IActionResult> UpdateUserInfo(UpdateUserInfoRequestDto request)
+    {
+        var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
+        return Ok(await _userService.UpdateUserInfoAsync(request, userId));
     }
     
     [HttpGet("status")]
