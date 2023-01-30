@@ -1,0 +1,59 @@
+﻿@inherits LayoutComponentBase
+<div class="page">
+    <div class="sticky-top">
+        <header class="navbar navbar-expand-md navbar-dark sticky-top d-print-none" style="z-index: 1000">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand text-white" href="/">
+                    EXTREMIS
+                </a>
+                <div class="navbar-nav flex-row order-md-last">
+                    <div class="d-none d-md-flex">
+                        <a @onclick="@ToggleDarkMode" class="nav-link px-0" title="Toggle dark mode" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                            @if (!_isDarkMode)
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    @(new MarkupString(TablerIcons.Moon))
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-sun" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    @(new MarkupString(TablerIcons.Sun))
+                                </svg>
+                            }
+                        </a>
+                        <div class="d-flex align-items-center">
+                            <LoginDisplay />
+                        </div>
+                    </div>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar-menu">
+                    <NavMenu />
+                </div>
+            </div>
+        </header>
+        <header class="navbar-expand-md">
+            <div class="collapse navbar-collapse" id="navbar-menu">
+                <NavMenu />
+            </div>
+        </header>
+    </div>
+</div>
+
+@code
+{
+    private bool _isDarkMode;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isDarkMode = await JsRuntime.InvokeAsync<bool>("getThemeMode");
+    }
+
+    private async Task ToggleDarkMode()
+    {
+        _isDarkMode = await JsRuntime.InvokeAsync<bool>("setThemeMode", !_isDarkMode);
+    }
+}

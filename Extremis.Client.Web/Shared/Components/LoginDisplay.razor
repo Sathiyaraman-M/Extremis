@@ -1,0 +1,14 @@
+﻿@using System.Security.Claims
+@using IdentityModel
+
+<AuthorizeView>
+    <Authorized>
+        <a href="Personal/Settings" class="text-white ms-2">
+            Hello, @(context.User.FindFirstValue(JwtClaimTypes.PreferredUserName))!
+        </a>
+        <button class="btn btn-light ms-3" @onclick="@(() => NavigationManager.NavigateToLogout("authentication/logout"))">Log Out</button>
+    </Authorized>
+    <NotAuthorized>
+        <button class="btn btn-light" @onclick="@(() => NavigationManager.NavigateToLogin("authentication/login"))">Log In</button>
+    </NotAuthorized>
+</AuthorizeView>

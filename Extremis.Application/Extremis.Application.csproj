@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>Extremis</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Extremis.Application.Contracts\Extremis.Application.Contracts.csproj" />
+      <ProjectReference Include="..\Extremis.Infrastructure\Extremis.Infrastructure.csproj" />
+      <ProjectReference Include="..\Extremis.Domain\Extremis.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

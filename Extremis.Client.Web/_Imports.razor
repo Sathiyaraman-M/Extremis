@@ -1,0 +1,26 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.AspNetCore.Components.WebAssembly.Http
+@using Microsoft.JSInterop
+@using BlazorSlice.Dialog
+@using BlazorSlice.Dialog.Interfaces
+@using BlazorSlice.Toast
+@using Extremis.Client
+@using Extremis.Client.Services
+@using Extremis.Client.Services.HttpClients
+@using Extremis.Client.Shared.Components
+@using Extremis.Client.Shared.Layouts
+@using TablerIcons = BlazorSlice.Dialog.TablerIcons
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IDialogService DialogService
+@inject HttpClient HttpClient
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject PublicHttpClient PublicHttpClient
+@inject IToast Toast

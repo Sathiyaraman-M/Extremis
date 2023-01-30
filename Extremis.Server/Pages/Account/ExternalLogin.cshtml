@@ -1,0 +1,21 @@
+﻿@page
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Extremis.Pages.Account.ExternalLoginModel
+@{
+    ViewData["Title"] = $"{Model.ProviderDisplayName} Login";
+}
+
+<h1>@ViewData["Title"]</h1>
+<h2 id="external-login-title">Associated your @Model.ProviderDisplayName account.</h2>
+<hr/>
+
+<p id="external-login-description">You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.</p>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <input asp-for="Input.Email" class="form-control" hidden readonly autocomplete="email"/>
+            <button class="btn btn-primary" type="submit">Enter Extremis</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Extremis</title>
+    <base href="/" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css">
+    
+    <!-- If you add any scoped CSS files, uncomment the following to load them
+    <link href="Extremis.Client.Web.styles.css" rel="stylesheet" /> -->
+</head>
+
+<body class="d-flex flex-column theme-light">
+    <div id="app" class="page page-center">
+        <div class="container container-slim py-4">
+            <div class="text-center">
+                <div class="mb-3">
+                    <a href="." class="navbar-brand navbar-brand-autodark"><img src="favicon.ico" height="36" alt=""></a>
+                </div>
+                <div class="text-muted mb-3">Preparing application</div>
+                <div class="progress progress-sm">
+                    <div class="progress-bar" style="width: var(--blazor-load-percentage)"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    
+    <script src="js/themeManager.js"></script>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+    <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
+</body>
+
+</html>
