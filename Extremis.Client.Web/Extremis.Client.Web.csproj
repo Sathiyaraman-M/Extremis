@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Extremis.Application.Contracts\Extremis.Application.Contracts.csproj" />
       <ProjectReference Include="..\Extremis.Domain\Extremis.Domain.csproj" />
     </ItemGroup>
 

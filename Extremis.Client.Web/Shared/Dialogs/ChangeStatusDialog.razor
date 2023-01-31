@@ -1,0 +1,74 @@
+﻿@inject UserService UserService
+@using Extremis.Users
+@using System.Security.Claims
+@using IdentityModel
+<EditForm Model="_request" OnSubmit="SaveStatus">
+    <Dialog>
+        <DialogContent>
+            <div class="row">
+                <div class="col-12">
+                    <div class="mb-3">
+                        <div class="form-label">Status</div>
+                        <InputSelect class="form-select" @bind-Value="_request.Status">
+                            <option value="@UserStatus.Online">Online</option>
+                            <option value="@UserStatus.Idle">Idle</option>
+                            <option value="@UserStatus.DoNotDisturb">Do Not Disturb</option>
+                        </InputSelect>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="mb-3">
+                        <div class="form-label">Custom Status Message</div>
+                        <InputText class="form-control" @bind-Value="_request.CustomStatus" />
+                    </div>
+                </div>
+            </div>
+        </DialogContent>
+        <DialogActions>
+            <button class="btn" @onclick="@(() => Dialog.Cancel())">Cancel</button>
+            <button class="btn btn-primary" type="submit">Update</button>
+        </DialogActions>
+    </Dialog>
+</EditForm>
+
+@code {
+    private readonly UpdateUserStatusRequestDto _request = new();
+    
+    [CascadingParameter]
+    private DialogInstance Dialog { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue(JwtClaimTypes.Subject);
+        var result = await UserService.GetUserStatus();
+        if (result.Succeeded)
+        {
+            _request.CustomStatus = result.Data.CustomStatus;
+            _request.Status = result.Data.Status;
+            _request.Id = userId;
+        }
+        else
+        {
+            _request.CustomStatus = string.Empty;
+            _request.Status = UserStatus.Online;
+            _request.Id = userId;
+        }
+    }
+
+    private async Task SaveStatus()
+    {
+        var result = await UserService.UpdateUserStatus(_request);
+        if (result.Succeeded)
+        {
+            Toast.Add("Success", result.Messages.FirstOrDefault(), Severity.Success);
+            Dialog.Close();
+        }
+        else
+        {
+            foreach (var message in result.Messages)
+            {
+                Toast.Add("Error", message, Severity.Error);
+            }
+        }
+    }
+}
