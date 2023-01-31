@@ -49,6 +49,7 @@ public class UserService : IUserService
             }
             appUser.Status = request.Status;
             appUser.CustomStatus = request.CustomStatus;
+            await _userManager.UpdateAsync(appUser);
             return await Result.SuccessAsync("Status updated successfully!");
         }
         catch (Exception e)

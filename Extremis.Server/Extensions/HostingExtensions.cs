@@ -23,6 +23,7 @@ public static class HostingExtensions
                 options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
             });
         builder.Services.AddAuthorization();
+        builder.Services.AddApplicationServices();
         builder.Services.AddInternalServices();
         builder.Services.AddAuthentication();
         builder.Services.AddAuthorization();
