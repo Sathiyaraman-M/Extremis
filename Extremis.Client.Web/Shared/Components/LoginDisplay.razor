@@ -1,5 +1,9 @@
-﻿@using System.Security.Claims
+﻿@inject UserService UserService
+
+@using System.Security.Claims
 @using BlazorSlice.Dialog.Services
+@using Extremis.Client.Shared.Dialogs
+@using Extremis.Users
 @using IdentityModel
 
 <AuthorizeView>
@@ -18,11 +22,40 @@
                 <span class="avatar avatar-sm" style="background-image: url('favicon.ico')"></span>
                 <div class="d-none d-xl-block ps-2">
                     <div>@(context.User.FindFirstValue(JwtClaimTypes.PreferredUserName))</div>
-                    <div class="mt-1 small text-muted">Custom status</div>
+                    <div class="d-flex ps-2 align-items-center">
+                        @if (UserStatusDto != null)
+                        {
+                            switch (UserStatusDto.Status)
+                            {
+                                case UserStatus.Online:
+                                    <span class="position-relative bottom-50 start-0 translate-middle badge bg-green"></span>
+                                    break;
+                                case UserStatus.Idle:
+                                    <span class="position-relative bottom-50 start-0 translate-middle badge bg-yellow"></span>
+                                    break;
+                                case UserStatus.DoNotDisturb:
+                                    <span class="position-relative bottom-50 start-0 translate-middle badge bg-red"></span>
+                                    break;
+                                case UserStatus.Offline:
+                                    <span class="position-relative bottom-50 start-0 translate-middle badge bg-gray"></span>
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException();
+                            }
+                            @if (!string.IsNullOrWhiteSpace(UserStatusDto.CustomStatus))
+                            {
+                                <div class="mt-1 small text-muted">@UserStatusDto.CustomStatus</div>
+                            }
+                            else
+                            {
+                                <div class="mt-1 small text-muted">@UserStatusDto.Status.ToString()</div>
+                            }
+                        }
+                    </div>
                 </div>
             </a>
             <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                <a href="#" class="dropdown-item">Change status</a>
+                <a class="dropdown-item" @onclick="UpdateUserStatus">Change status</a>
                 <a href="/personal/profile" class="dropdown-item">Profile</a>
                 <div class="dropdown-divider"></div>
                 <a href="/personal/settings" class="dropdown-item">Settings</a>
@@ -36,6 +69,34 @@
 </AuthorizeView>
 
 @code {
+    
+    private UserStatusDto UserStatusDto { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUserStatus();
+    }
+
+    private async Task LoadUserStatus()
+    {
+        var statusResult = await UserService.GetUserStatus();
+        if (statusResult.Succeeded)
+        {
+            UserStatusDto = statusResult.Data;
+        }
+    }
+
+    private async Task UpdateUserStatus()
+    {
+        var dialogOptions = new DialogOptions() { CloseButton = true, CloseOnEscapeKey = true, Position = DialogPosition.Centered };
+        var dialog = DialogService.Show<ChangeStatusDialog>("Update User Status", dialogOptions);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            await LoadUserStatus();
+        }
+    }
+    
     private async Task Logout()
     {
         var dialogOptions = new DialogOptions()
