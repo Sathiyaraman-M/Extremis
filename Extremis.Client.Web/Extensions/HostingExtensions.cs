@@ -23,6 +23,7 @@ public static class HostingExtensions
         builder.Services.AddApiAuthorization();
         builder.Services.AddBlazorSliceToast();
         builder.Services.AddBlazorSliceDialog();
+        builder.Services.AddClientServices();
         return builder;
     }
 
