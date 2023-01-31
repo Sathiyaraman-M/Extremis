@@ -3,10 +3,31 @@
 
 <AuthorizeView>
     <Authorized>
-        <a href="Personal/Settings" class="text-white ms-2">
-            Hello, @(context.User.FindFirstValue(JwtClaimTypes.PreferredUserName))!
+        <div class="me-2">
+        <a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1" aria-label="Show notifications">
+            <!-- Download SVG icon from http://tabler-icons.io/i/bell -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/>
+            </svg>
+            <span class="badge bg-red"></span>
         </a>
-        <button class="btn btn-light ms-3" @onclick="@(() => NavigationManager.NavigateToLogout("authentication/logout"))">Log Out</button>
+        </div>
+        <div class="nav-item dropdown">
+            <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+                <span class="avatar avatar-sm" style="background-image: url(./static/avatars/003m.jpg)"></span>
+                <div class="d-none d-xl-block ps-2">
+                    <div>@(context.User.FindFirstValue(JwtClaimTypes.PreferredUserName))</div>
+                    <div class="mt-1 small text-muted">Custom status</div>
+                </div>
+            </a>
+            <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <a href="#" class="dropdown-item">Change status</a>
+                <a href="/personal/profile" class="dropdown-item">Profile</a>
+                <div class="dropdown-divider"></div>
+                <a href="/personal/settings" class="dropdown-item">Settings</a>
+                <a class="dropdown-item" @onclick="@(() => NavigationManager.NavigateToLogout("authentication/logout"))">Logout</a>
+            </div>
+        </div>
     </Authorized>
     <NotAuthorized>
         <button class="btn btn-light" @onclick="@(() => NavigationManager.NavigateToLogin("authentication/login"))">Log In</button>
