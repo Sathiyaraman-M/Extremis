@@ -1,4 +1,5 @@
 ﻿using Duende.IdentityServer.EntityFramework.Options;
+using Extremis.Proposals;
 using Extremis.Servers;
 using Extremis.Users;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
@@ -17,6 +18,8 @@ public class AppDbContext: ApiAuthorizationDbContext<AppUser>
     }
     
     public DbSet<Server> Servers { get; set; }
+    public DbSet<Proposal> Proposals { get; set; }
+    public DbSet<Reciprocation> Reciprocations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
