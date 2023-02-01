@@ -1,26 +1,15 @@
-﻿@page "/explore"
+﻿@page "/Proposals"
 @using Extremis.Proposals
 @inject ProposalService ProposalService
+
 <div class="page-body">
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <h3 class="page-title">Explore</h3>
+                <h3 class="page-title">Your Proposals</h3>
                 <div class="card-actions">
                     <div class="btn-list align-items-center">
-                        <a href="/Proposals/History" class="mx-2">Your History</a>
-                        <a class="btn btn-outline-primary" href="/Proposals">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-list" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M9 6l11 0"></path><path d="M9 12l11 0"></path><path d="M9 18l11 0"></path><path d="M5 6l0 .01"></path><path d="M5 12l0 .01"></path><path d="M5 18l0 .01"></path>
-                            </svg>
-                            Your Proposals
-                        </a>
-                        <button class="btn btn-primary" @onclick="CreateProposal">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path>
-                            </svg>
-                            Create new Proposal
-                        </button>
+                        <a href="/explore" class="mx-2">Go back to Explore</a>
                     </div>
                 </div>
             </div>
@@ -59,7 +48,9 @@
                                             <div class="card-body">
                                                 <div class="d-flex align-items-center">
                                                     <div class="btn-list">
-                                                        <button class="btn btn-success">Apply</button>
+                                                        <button class="btn btn-secondary">See Candidates</button>
+                                                        <button class="btn btn-yellow">Edit</button>
+                                                        <button class="btn btn-danger">Close Proposal</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -76,25 +67,11 @@
                         <div class="progress-bar progress-bar-indeterminate"></div>
                     </div>
                 }
-                @* <div class="row row-cards"> *@
-                @*     <div class="col-sm-12 col-md-6 col-lg-3"> *@
-                @*         <div class="card"> *@
-                @*             <div class="card-header"> *@
-                @*                 <h3 class="card-title"></h3> *@
-                @*                 <div class="card-actions"> *@
-                @*                     <button class="btn btn-primary">Sample</button> *@
-                @*                 </div> *@
-                @*             </div> *@
-                @*             <div class="card-body"> *@
-                @*                 <span>Content goes here</span> *@
-                @*             </div> *@
-                @*         </div> *@
-                @*     </div> *@
-                @* </div> *@
             </div>
         </div>
     </div>
 </div>
+
 
 @code
 {
@@ -113,7 +90,7 @@
 
     private async Task LoadProposals(int pageNumber)
     {
-        var result = await ProposalService.GetAllProposals(pageNumber, _pageSize, _searchString);
+        var result = await ProposalService.GetAllMyProposals(pageNumber, _pageSize, _searchString);
         if (result.Succeeded)
         {
             _proposals = result.Data;
@@ -125,20 +102,6 @@
             {
                 Toast.Add("Error", message, Severity.Error);
             }
-        }
-    }
-
-    private async Task CreateProposal()
-    {
-        var options = new DialogOptions()
-        {
-            Position = DialogPosition.Centered
-        };
-        var dialog = DialogService.Show<CreateProposalDialog>("Create Proposal", options);
-        var result = await dialog.Result;
-        if (!result.Cancelled)
-        {
-            
         }
     }
 }
