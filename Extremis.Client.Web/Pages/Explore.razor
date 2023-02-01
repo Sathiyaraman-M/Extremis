@@ -7,69 +7,101 @@
             <div class="card-header">
                 <h3 class="page-title">Explore</h3>
                 <div class="card-actions">
-                    <a href="/proposals" class="mx-4">Your History</a>
-                    <a class="btn btn-outline-primary me-2">Your Proposals</a>
-                    <button class="btn btn-primary" @onclick="CreateProposal">
-                        <BSIcon Icon="@TablerIcons.Plus"/>
-                        Create new Proposal
-                    </button>
+                    <div class="btn-list align-items-center">
+                        <a href="/proposals" class="mx-2">Your History</a>
+                        <button class="btn btn-outline-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-list" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M9 6l11 0"></path><path d="M9 12l11 0"></path><path d="M9 18l11 0"></path><path d="M5 6l0 .01"></path><path d="M5 12l0 .01"></path><path d="M5 18l0 .01"></path>
+                            </svg>
+                            Your Proposals
+                        </button>
+                        <button class="btn btn-primary" @onclick="CreateProposal">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path>
+                            </svg>
+                            Create new Proposal
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="card-body bg-gray">
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col">
+                        <InputText class="form-control" @bind-Value="_searchString" />
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path><path d="M21 21l-6 -6"></path>
+                            </svg>
+                            Search
+                        </button>
+                    </div>
+                </div>
                 <div class="row row-cards">
-                    <div class="col-sm-12 col-md-6 col-lg-3">
+                    <div class="space-y">
                         <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title"></h3>
-                                <div class="card-actions">
-                                    <button class="btn btn-primary">Sample</button>
+                            <div class="row g-0">
+                                <div class="col-auto">
+                                    <div class="card-body">
+                                        <div class="avatar avatar-md" style="background-image: url('favicon.ico')"></div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="card-body">
-                                <span>Content goes here</span>
+                                <div class="col">
+                                    <div class="card-body">
+                                        <h3>Proposal #1</h3>
+                                        <span>Description goes here</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm-12 col-md-6 col-lg-3">
                         <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title"></h3>
-                                <div class="card-actions">
-                                    <button class="btn btn-primary">Sample</button>
+                            <div class="row g-0">
+                                <div class="col-auto">
+                                    <div class="card-body">
+                                        <div class="avatar avatar-md" style="background-image: url('favicon.ico')"></div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="card-body">
-                                <span>Content goes here</span>
+                                <div class="col">
+                                    <div class="card-body">
+                                        <h3>Proposal #2</h3>
+                                        <span>Description goes here</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-sm-12 col-md-6 col-lg-3">
                         <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title"></h3>
-                                <div class="card-actions">
-                                    <button class="btn btn-primary">Sample</button>
+                            <div class="row g-0">
+                                <div class="col-auto">
+                                    <div class="card-body">
+                                        <div class="avatar avatar-md" style="background-image: url('favicon.ico')"></div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="card-body">
-                                <span>Content goes here</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-md-6 col-lg-3">
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title"></h3>
-                                <div class="card-actions">
-                                    <button class="btn btn-primary">Sample</button>
+                                <div class="col">
+                                    <div class="card-body">
+                                        <h3>Proposal #3</h3>
+                                        <span>Description goes here</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="card-body">
-                                <span>Content goes here</span>
                             </div>
                         </div>
                     </div>
                 </div>
+                @* <div class="row row-cards"> *@
+                @*     <div class="col-sm-12 col-md-6 col-lg-3"> *@
+                @*         <div class="card"> *@
+                @*             <div class="card-header"> *@
+                @*                 <h3 class="card-title"></h3> *@
+                @*                 <div class="card-actions"> *@
+                @*                     <button class="btn btn-primary">Sample</button> *@
+                @*                 </div> *@
+                @*             </div> *@
+                @*             <div class="card-body"> *@
+                @*                 <span>Content goes here</span> *@
+                @*             </div> *@
+                @*         </div> *@
+                @*     </div> *@
+                @* </div> *@
             </div>
         </div>
     </div>
@@ -77,6 +109,8 @@
 
 @code
 {
+    private string _searchString = "";
+    
     private async Task CreateProposal()
     {
         var options = new DialogOptions()
