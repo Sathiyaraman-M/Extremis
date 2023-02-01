@@ -18,9 +18,9 @@ public class Proposal : IAuditableEntity<string>
     // public string OriginServerId { get; set; }
     
     public ProposalStatus Status { get; set; }
-    public TimeSpan Duration { get; set; }
     
-    public DateTime TimeOutTime { get; set; }
+    public string Duration { get; set; }
+    public DateTime ExpireTime { get; set; }
 
     public string CreatedBy { get; set; }
     public string CreatedByUserId { get; set; }
