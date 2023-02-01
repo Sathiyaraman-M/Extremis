@@ -1,70 +1,66 @@
 ﻿@page "/Personal/Profile"
 @inject UserService UserService
 @using Extremis.Users
-<EditForm Model="_request" OnValidSubmit="SaveInfo">
-    <div class="page-header d-print-none">
-        <div class="container-xl">
-            <div class="row">
-                <div class="col">
-                    <h2 class="page-title px-2">
-                        Profile
-                    </h2>
-                </div>
-                <div class="col-auto">
-                    <div class="btn-list">
-                        <button class="btn btn-outline-primary" @onclick="LoadInfo">Reset</button>
-                        <button class="btn btn-primary" type="submit">Update Info</button>
+<div class="page-body">
+    <div class="container-xl">
+        <EditForm Model="_request" OnValidSubmit="SaveInfo">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="page-title">Profile</h2>
+                    <div class="card-actions">
+                        <div class="btn-list">
+                            <button class="btn btn-outline-primary" @onclick="LoadInfo">Reset</button>
+                            <button class="btn btn-primary" type="submit">Update Info</button>
+                        </div>
                     </div>
                 </div>
+                <div class="card-body">
+                    @if (_loaded)
+                    {
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input class="form-control" value="@_email" disabled/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">User Name</label>
+                            <InputText class="form-control" @bind-Value="@_request.UserName"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <InputText class="form-control" @bind-Value="@_request.FullName"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Date of Birth</label>
+                            <InputDate class="form-control" @bind-Value="@_request.DateOfBirth"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">One Line about yourself</label>
+                            <InputText class="form-control" @bind-Value="@_request.SingleLineDescription"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">City</label>
+                            <InputText class="form-control" @bind-Value="@_request.City"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Country</label>
+                            <InputText class="form-control" @bind-Value="@_request.Country"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Bio</label>
+                            <InputTextArea rows="3" class="form-control" @bind-Value="@_request.Bio"/>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="progress progress-sm">
+                            <div class="progress-bar progress-bar-indeterminate"></div>
+                        </div>
+                    }
+                </div>
             </div>
-        </div>
+        </EditForm>
     </div>
-    <div class="page-body">
-        <div class="container-xl">
-            @if (_loaded)
-            {
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input class="form-control" value="@_email" disabled/>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">User Name</label>
-                    <InputText class="form-control" @bind-Value="@_request.UserName" />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Full Name</label>
-                    <InputText class="form-control" @bind-Value="@_request.FullName" />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Date of Birth</label>
-                    <InputDate class="form-control" @bind-Value="@_request.DateOfBirth" />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">One Line about yourself</label>
-                    <InputText class="form-control" @bind-Value="@_request.SingleLineDescription" />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">City</label>
-                    <InputText class="form-control" @bind-Value="@_request.City" />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Country</label>
-                    <InputText class="form-control" @bind-Value="@_request.Country" />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Bio</label>
-                    <InputTextArea rows="3" class="form-control" @bind-Value="@_request.Bio" />
-                </div>
-            }
-            else
-            {
-                <div class="progress progress-sm">
-                    <div class="progress-bar progress-bar-indeterminate"></div>
-                </div>
-            }
-        </div>
-    </div>
-</EditForm>
+</div>
 
 @code {
     private UpdateUserInfoRequestDto _request = new();
