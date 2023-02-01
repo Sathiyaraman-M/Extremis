@@ -15,12 +15,12 @@ public class ProposalService
 
     public async Task<PaginatedResult<ProposalDto>> GetAllMyProposals(int pageNumber, int pageSize, string searchString)
     {
-        return await _httpClient.GetFromJsonAsync<PaginatedResult<ProposalDto>>("api/proposals/mine");
+        return await _httpClient.GetFromJsonAsync<PaginatedResult<ProposalDto>>($"api/proposals/mine?pageNumber={pageNumber}&pageSize={pageSize}&searchString={searchString}");
     }
 
     public async Task<PaginatedResult<ProposalDto>> GetAllProposals(int pageNumber, int pageSize, string searchString)
     {
-        return await _httpClient.GetFromJsonAsync<PaginatedResult<ProposalDto>>("api/proposals");
+        return await _httpClient.GetFromJsonAsync<PaginatedResult<ProposalDto>>($"api/proposals?pageNumber={pageNumber}&pageSize={pageSize}&searchString={searchString}");
     }
     
     public async Task<IResult> CreateProposal(CreateProposalRequestDto request)

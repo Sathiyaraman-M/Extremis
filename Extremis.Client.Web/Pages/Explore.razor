@@ -1,6 +1,6 @@
 ﻿@page "/explore"
-@using BlazorSlice.Dialog.Services
-@using Extremis.Client.Shared.Dialogs
+@using Extremis.Proposals
+@inject ProposalService ProposalService
 <div class="page-body">
     <div class="container">
         <div class="card">
@@ -30,63 +30,52 @@
                         <InputText class="form-control" @bind-Value="_searchString" />
                     </div>
                     <div class="col-auto">
-                        <button class="btn btn-primary">
+                        <button class="btn btn-primary" @onclick="@(() => LoadProposals(1))">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path><path d="M21 21l-6 -6"></path>
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path><path d="M21 21l-6 -6"></path>
                             </svg>
                             Search
                         </button>
                     </div>
                 </div>
-                <div class="row row-cards">
-                    <div class="space-y">
-                        <div class="card">
-                            <div class="row g-0">
-                                <div class="col-auto">
-                                    <div class="card-body">
-                                        <div class="avatar avatar-md" style="background-image: url('favicon.ico')"></div>
+                @if (_loaded)
+                {
+                    <div class="text-center">
+                        <Pagination CurrentPage="_pageNumber" TotalPages="_totalPages" PageChanged="LoadProposals" />
+                    </div>
+                    <div class="row row-cards">
+                        <div class="space-y">
+                            @foreach (var proposal in _proposals)
+                            {
+                                <div class="card">
+                                    <div class="row g-0">
+                                        <div class="col">
+                                            <div class="card-body">
+                                                <h3>@proposal.Title</h3>
+                                                <span>@proposal.Description</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="btn-list">
+                                                        <button class="btn btn-success">Apply</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col">
-                                    <div class="card-body">
-                                        <h3>Proposal #1</h3>
-                                        <span>Description goes here</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="row g-0">
-                                <div class="col-auto">
-                                    <div class="card-body">
-                                        <div class="avatar avatar-md" style="background-image: url('favicon.ico')"></div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card-body">
-                                        <h3>Proposal #2</h3>
-                                        <span>Description goes here</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="row g-0">
-                                <div class="col-auto">
-                                    <div class="card-body">
-                                        <div class="avatar avatar-md" style="background-image: url('favicon.ico')"></div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card-body">
-                                        <h3>Proposal #3</h3>
-                                        <span>Description goes here</span>
-                                    </div>
-                                </div>
-                            </div>
+                            }
                         </div>
                     </div>
-                </div>
+                }
+                else
+                {
+                    <div class="progress progress-sm">
+                        <div class="progress-bar progress-bar-indeterminate"></div>
+                    </div>
+                }
                 @* <div class="row row-cards"> *@
                 @*     <div class="col-sm-12 col-md-6 col-lg-3"> *@
                 @*         <div class="card"> *@
@@ -109,8 +98,36 @@
 
 @code
 {
+    private int _pageNumber = 1;
+    private int _pageSize = 10;
+    private int _totalPages;
     private string _searchString = "";
-    
+    private bool _loaded;
+    private List<ProposalDto> _proposals = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProposals(_pageNumber);
+        _loaded = true;
+    }
+
+    private async Task LoadProposals(int pageNumber)
+    {
+        var result = await ProposalService.GetAllProposals(pageNumber, _pageSize, _searchString);
+        if (result.Succeeded)
+        {
+            _proposals = result.Data;
+            _totalPages = result.TotalPages;
+        }
+        else
+        {
+            foreach (var message in result.Messages)
+            {
+                Toast.Add("Error", message, Severity.Error);
+            }
+        }
+    }
+
     private async Task CreateProposal()
     {
         var options = new DialogOptions()
