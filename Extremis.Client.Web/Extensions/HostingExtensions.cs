@@ -1,10 +1,7 @@
 ﻿using BlazorSlice.Dialog.Extensions;
 using BlazorSlice.Toast.Extensions;
-using Extremis.Client.Services;
 using Extremis.Client.Services.HttpClients;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 namespace Extremis.Client.Extensions;
 

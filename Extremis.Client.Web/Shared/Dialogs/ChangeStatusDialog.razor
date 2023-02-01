@@ -1,7 +1,5 @@
 ﻿@inject UserService UserService
 @using Extremis.Users
-@using System.Security.Claims
-@using IdentityModel
 <EditForm Model="_request" OnSubmit="SaveStatus">
     <Dialog>
         <DialogContent>
@@ -40,18 +38,17 @@
     protected override async Task OnInitializedAsync()
     {
         var userId = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue(JwtClaimTypes.Subject);
+        _request.Id = userId;
         var result = await UserService.GetUserStatus();
         if (result.Succeeded)
         {
             _request.CustomStatus = result.Data.CustomStatus;
             _request.Status = result.Data.Status;
-            _request.Id = userId;
         }
         else
         {
             _request.CustomStatus = string.Empty;
             _request.Status = UserStatus.Online;
-            _request.Id = userId;
         }
     }
 
