@@ -135,4 +135,30 @@ public class ProposalService : IProposalService
             return await Result.FailAsync(e.Message);
         }
     }
+
+    public async Task<IResult> ApplyForProposal(CreateReciprocationRequestDto request, string userName, string userId)
+    {
+        try
+        {
+            var reciprocation = new Reciprocation()
+            {
+                CreatedBy = userName,
+                CreatedByUserId = userId,
+                CreatedOn = DateTime.Now,
+                Note = request.Note,
+                ProposalId = request.ProposalId,
+                ReciprocatorId = userId,
+                LastModifiedByUserId = userId,
+                LastModifiedBy = userName,
+                LastModifiedOn = DateTime.Now
+            };
+            await _unitOfWork.GetRepository<Reciprocation>().AddAsync(reciprocation);
+            await _unitOfWork.Commit();
+            return await Result.SuccessAsync();
+        }
+        catch (Exception e)
+        {
+            return await Result.FailAsync(e.Message);
+        }
+    }
 }
