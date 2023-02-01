@@ -16,7 +16,7 @@ public class ProposalService : IProposalService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<PaginatedResult<ProposalDto>> GetAllMyProposals(int pageNumber, int pageSize, string userId)
+    public async Task<PaginatedResult<ProposalDto>> GetAllMyProposals(int pageNumber, int pageSize, string searchString, string userId)
     {
         try
         {
@@ -36,6 +36,7 @@ public class ProposalService : IProposalService
             return await _unitOfWork.GetRepository<Proposal>().Entities
                 .Include(x => x.Proposer)
                 .Where(x => x.ProposerId == userId)
+                .Specify(new ProposalSearchSpecification(searchString))
                 .OrderByDescending(x => x.CreatedOn)
                 .ThenByDescending(x => x.LastModifiedOn)
                 .Select(expression)
@@ -136,7 +137,7 @@ public class ProposalService : IProposalService
         }
     }
 
-    public async Task<IResult> ApplyForProposal(CreateReciprocationRequestDto request, string userName, string userId)
+    public async Task<IResult> ApplyForProposal(ApplyForProposalRequestDto request, string userName, string userId)
     {
         try
         {
@@ -159,6 +160,35 @@ public class ProposalService : IProposalService
         catch (Exception e)
         {
             return await Result.FailAsync(e.Message);
+        }
+    }
+
+    public async Task<PaginatedResult<ReciprocatorDto>> GetAllCandidates(int pageNumber, int pageSize, string searchString, string id, string userId)
+    {
+        try
+        {
+            Expression<Func<Reciprocation, ReciprocatorDto>> expression = reciprocation => new ReciprocatorDto()
+            {
+                CreatedOn = reciprocation.CreatedOn,
+                Id = reciprocation.Id,
+                ReciprocatorId = reciprocation.ReciprocatorId,
+                Note = reciprocation.Note,
+                CreatedByUserId = reciprocation.CreatedByUserId,
+                CreatedBy = reciprocation.CreatedBy,
+                ProposalId = reciprocation.ProposalId
+            };
+            return await _unitOfWork.GetRepository<Reciprocation>().Entities
+                .Include(x => x.Proposal)
+                .Where(x => x.ProposalId == id && x.Proposal.ProposerId == userId)
+                .Specify(new ReciprocationSearchSpecification(searchString))
+                .OrderByDescending(x => x.CreatedOn)
+                .ThenByDescending(x => x.LastModifiedOn)
+                .Select(expression)
+                .ToPaginatedListAsync(pageNumber, pageSize);
+        }
+        catch (Exception e)
+        {
+            return PaginatedResult<ReciprocatorDto>.Failure(new List<string>() { e.Message });
         }
     }
 }
