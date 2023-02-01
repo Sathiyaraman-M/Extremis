@@ -31,30 +31,35 @@ public class AppDbContext: ApiAuthorizationDbContext<AppUser>
         base.OnModelCreating(builder);
 
         builder.Entity<AppUser>()
-            .ToTable("Users", "Identity")
+            .ToTable("Users", "dbo")
             .Property(e => e.Id)
             .ValueGeneratedOnAdd();
         
         builder.Entity<IdentityRole>()
-            .ToTable("Roles", "Identity");
+            .ToTable("Roles", "dbo");
 
         builder.Entity<IdentityUserRole<string>>()
-            .ToTable("UserRoles", "Identity");
-
-        builder.Entity<IdentityUserRole<string>>()
-            .ToTable("UserClaims", "Identity");
+            .ToTable("UserRoles");
+        
+        builder.Entity<IdentityUserClaim<string>>()
+            .ToTable("UserClaims");
 
         builder.Entity<IdentityUserLogin<string>>()
-            .ToTable("UserLogins", "Identity");
+            .ToTable("UserLogins");
 
         builder.Entity<IdentityRoleClaim<string>>()
-            .ToTable("RoleClaims", "Identity");
+            .ToTable("RoleClaims");
 
         builder.Entity<IdentityUserToken<string>>()
-            .ToTable("UserTokens", "Identity");
+            .ToTable("UserTokens");
 
         builder.Entity<Server>()
-            .ToTable("Servers", "dbo")
+            .ToTable("Servers")
+            .Property(x => x.Id)
+            .ValueGeneratedOnAdd();
+
+        builder.Entity<Proposal>()
+            .ToTable("Proposals")
             .Property(x => x.Id)
             .ValueGeneratedOnAdd();
     }

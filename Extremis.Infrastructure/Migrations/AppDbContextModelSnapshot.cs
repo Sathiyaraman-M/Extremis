@@ -166,6 +166,7 @@ namespace Extremis.Migrations
             modelBuilder.Entity("Extremis.Proposals.Proposal", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedBy")
@@ -208,7 +209,7 @@ namespace Extremis.Migrations
 
                     b.HasIndex("ProposerId");
 
-                    b.ToTable("Proposals");
+                    b.ToTable("Proposals", (string)null);
                 });
 
             modelBuilder.Entity("Extremis.Proposals.Reciprocation", b =>
@@ -268,7 +269,7 @@ namespace Extremis.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Servers", "dbo");
+                    b.ToTable("Servers", (string)null);
                 });
 
             modelBuilder.Entity("Extremis.Servers.ServerMember", b =>
@@ -405,7 +406,7 @@ namespace Extremis.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("Users", "Identity");
+                    b.ToTable("Users", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -432,7 +433,7 @@ namespace Extremis.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("Roles", "Identity");
+                    b.ToTable("Roles", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -457,7 +458,7 @@ namespace Extremis.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("RoleClaims", "Identity");
+                    b.ToTable("RoleClaims", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -482,7 +483,7 @@ namespace Extremis.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("UserClaims", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -504,7 +505,7 @@ namespace Extremis.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserLogins", "Identity");
+                    b.ToTable("UserLogins", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -519,7 +520,7 @@ namespace Extremis.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserClaims", "Identity");
+                    b.ToTable("UserRoles", "dbo");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -538,7 +539,7 @@ namespace Extremis.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("UserTokens", "Identity");
+                    b.ToTable("UserTokens", "dbo");
                 });
 
             modelBuilder.Entity("Extremis.Proposals.Proposal", b =>
