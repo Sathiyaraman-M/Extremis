@@ -14,7 +14,7 @@ h1:focus {
 
 .btn {
     transition-duration: .6s;
-    transition: all .6s ease-out;
+    transition: all .6s ease-in-out;
     transition-property: transform;
 }
 
