@@ -1,4 +1,4 @@
-@page "/Server/Info"
+@page "/Server/{Id:guid}/Info"
 <div class="page-wrapper">
         <!-- Page header -->
         <div class="page-header d-print-none">
@@ -108,5 +108,6 @@
         
       </div>
 @code {
-    
+    [Parameter]
+    public Guid Id { get; set; }
 }
