@@ -15,7 +15,7 @@ public class ProposalService : IProposalService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<PaginatedResult<ProposalDto>> GetAllProposals(int pageNumber, int pageSize, string searchString, string orderBy)
+    public async Task<PaginatedResult<ProposalDto>> GetAllMyProposals(int pageNumber, int pageSize, string userId)
     {
         try
         {
@@ -34,6 +34,38 @@ public class ProposalService : IProposalService
             };
             return await _unitOfWork.GetRepository<Proposal>().Entities
                 .Include(x => x.Proposer)
+                .Where(x => x.ProposerId == userId)
+                .OrderByDescending(x => x.CreatedOn)
+                .ThenByDescending(x => x.LastModifiedOn)
+                .Select(expression)
+                .ToPaginatedListAsync(pageNumber, pageSize);
+        }
+        catch (Exception e)
+        {
+            return PaginatedResult<ProposalDto>.Failure(new List<string>() { e.Message });
+        }
+    }
+
+    public async Task<PaginatedResult<ProposalDto>> GetAllProposals(int pageNumber, int pageSize, string searchString, string orderBy, string userId)
+    {
+        try
+        {
+            Expression<Func<Proposal, ProposalDto>> expression = proposal => new ProposalDto()
+            {
+                CreatedOn = proposal.CreatedOn,
+                Description = proposal.Description,
+                Duration = proposal.Duration,
+                ExpireTime = proposal.ExpireTime,
+                Id = proposal.Id,
+                LastModifiedOn = proposal.LastModifiedOn,
+                ProposerId = proposal.ProposerId,
+                ProposerName = proposal.Proposer.FullName,
+                Status = proposal.Status,
+                Title = proposal.Title
+            };
+            return await _unitOfWork.GetRepository<Proposal>().Entities
+                .Include(x => x.Proposer)
+                .Where(x => x.ProposerId != userId)
                 .OrderByDescending(x => x.CreatedOn)
                 .ThenByDescending(x => x.LastModifiedOn)
                 .Select(expression)

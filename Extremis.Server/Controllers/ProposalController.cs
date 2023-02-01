@@ -10,11 +10,19 @@ public class ProposalController : ControllerBase
 
     public ProposalController(IProposalService proposalService) => _proposalService = proposalService;
 
+    [HttpGet("mine")]
+    public async Task<IActionResult> GetAllMyProposals(int pageNumber, int pageSize, string searchString,
+        string orderBy = null)
+    {
+        var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
+        return Ok(await _proposalService.GetAllMyProposals(pageNumber, pageSize, userId));
+    }
     [HttpGet]
     public async Task<IActionResult> GetAllProposals(int pageNumber, int pageSize, string searchString,
         string orderBy = null)
     {
-        return Ok(await _proposalService.GetAllProposals(pageNumber, pageSize, searchString, orderBy));
+        var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
+        return Ok(await _proposalService.GetAllProposals(pageNumber, pageSize, searchString, orderBy, userId));
     }
 
     [HttpGet("{id}")]
