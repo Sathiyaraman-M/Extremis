@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Extremis.Extensions;
 using Extremis.Repositories;
+using Extremis.Specifications;
 using Extremis.Wrapper;
 using Microsoft.EntityFrameworkCore;
 
@@ -66,6 +67,7 @@ public class ProposalService : IProposalService
             return await _unitOfWork.GetRepository<Proposal>().Entities
                 .Include(x => x.Proposer)
                 .Where(x => x.ProposerId != userId)
+                .Specify(new ProposalSearchSpecification(searchString))
                 .OrderByDescending(x => x.CreatedOn)
                 .ThenByDescending(x => x.LastModifiedOn)
                 .Select(expression)
