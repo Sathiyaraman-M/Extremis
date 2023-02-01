@@ -62,5 +62,10 @@ public class AppDbContext: ApiAuthorizationDbContext<AppUser>
             .ToTable("Proposals")
             .Property(x => x.Id)
             .ValueGeneratedOnAdd();
+        
+        builder.Entity<Reciprocation>()
+            .ToTable("Reciprocations")
+            .Property(x => x.Id)
+            .ValueGeneratedOnAdd();
     }
 }
