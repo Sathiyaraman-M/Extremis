@@ -1,0 +1,59 @@
+﻿@inject ProposalService ProposalService
+@using Extremis.Proposals
+
+<EditForm Model="_request" OnValidSubmit="CreateProposal">
+    <Dialog>
+        <DialogContent>
+            <div class="row">
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <InputText class="form-control" @bind-Value="@_request.Title" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <InputTextArea rows="2" class="form-control" @bind-Value="@_request.Description" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Expire Time</label>
+                        <InputDate class="form-control" @bind-Value="@_request.ExpireTime" Type="InputDateType.DateTimeLocal" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Duration</label>
+                        <InputText class="form-control" @bind-Value="@_request.Duration" />
+                    </div>
+                </div>
+            </div>
+        </DialogContent>
+        <DialogActions>
+            <button class="btn btn-ghost-gray" @onclick="@(() => Dialog.Cancel())">Discard</button>
+            <button class="btn btn-primary" type="submit">Create</button>
+        </DialogActions>
+    </Dialog>
+</EditForm>
+
+@code {
+    private readonly CreateProposalRequestDto _request = new()
+    {
+        ExpireTime = DateTime.Now.AddDays(7)
+    };
+    
+    [CascadingParameter]
+    private DialogInstance Dialog { get; set; }
+
+    private async Task CreateProposal()
+    {
+        var result = await ProposalService.CreateProposal(_request);
+        if (result.Succeeded)
+        {
+            Toast.Add("Success", result.Messages.FirstOrDefault(), Severity.Success);
+        }
+        else
+        {
+            foreach (var message in result.Messages)
+            {
+                Toast.Add("Error", message, Severity.Error);
+            }
+        }
+    }
+}
