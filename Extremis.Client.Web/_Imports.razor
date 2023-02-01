@@ -18,6 +18,7 @@
 @using Extremis.Client.Shared.Layouts
 @using TablerIcons = BlazorSlice.Dialog.TablerIcons
 
+@attribute [Authorize]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IDialogService DialogService
 @inject HttpClient HttpClient
