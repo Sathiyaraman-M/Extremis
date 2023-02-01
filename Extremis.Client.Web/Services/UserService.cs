@@ -23,4 +23,15 @@ public class UserService
         var response = await _httpClient.PostAsJsonAsync("api/users/status", request);
         return await response.ToResult();
     }
+
+    public async Task<IResult<UserInfoDto>> GetUserInfo()
+    {
+        return await _httpClient.GetFromJsonAsync<Result<UserInfoDto>>("api/users/info");
+    }
+
+    public async Task<IResult> UpdateUserInfo(UpdateUserInfoRequestDto request)
+    {
+        var response = await _httpClient.PostAsJsonAsync("api/users/info", request);
+        return await response.ToResult();
+    }
 }
