@@ -1,19 +1,21 @@
 ﻿@page "/explore"
+@using BlazorSlice.Dialog.Services
+@using Extremis.Client.Shared.Dialogs
 <div class="page-body">
-    <div class="container-fluid">
+    <div class="container">
         <div class="card">
             <div class="card-header">
                 <h3 class="page-title">Explore</h3>
                 <div class="card-actions">
                     <a href="/proposals" class="mx-4">Your History</a>
                     <a class="btn btn-outline-primary me-2">Your Proposals</a>
-                    <a class="btn btn-primary">
+                    <button class="btn btn-primary" @onclick="CreateProposal">
                         <BSIcon Icon="@TablerIcons.Plus"/>
                         Create new Proposal
-                    </a>
+                    </button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body bg-gray">
                 <div class="row row-cards">
                     <div class="col-sm-12 col-md-6 col-lg-3">
                         <div class="card">
@@ -72,3 +74,20 @@
         </div>
     </div>
 </div>
+
+@code
+{
+    private async Task CreateProposal()
+    {
+        var options = new DialogOptions()
+        {
+            Position = DialogPosition.Centered
+        };
+        var dialog = DialogService.Show<CreateProposalDialog>("Create Proposal", options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            
+        }
+    }
+}
