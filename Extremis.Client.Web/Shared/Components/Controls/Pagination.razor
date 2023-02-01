@@ -1,0 +1,75 @@
+﻿<ul class="pagination @Class" style="@Style">
+    @foreach (var link in _pagingLinks)
+    {
+        <li class="page-item @(link.Enabled ? null : "disabled") @(link.Active ? "active" : null)" 
+            style="cursor: pointer" @onclick="(() => OnSelectPage(link))">
+            <span class="page-link">@link.Text</span>
+        </li>
+    }
+</ul>
+
+@code {
+    [Parameter]
+    public int TotalPages { get; set; }
+    
+    [Parameter]
+    public int CurrentPage { get; set; }
+
+    [Parameter]
+    public int Spread { get; set; } = 3;
+    
+    [Parameter]
+    public EventCallback<int> PageChanged { get; set; }
+    
+    [Parameter]
+    public string Class { get; set; }
+    
+    [Parameter]
+    public string Style { get; set; }
+
+    private List<PagingLink> _pagingLinks;
+
+    protected override void OnInitialized()
+    {
+        _pagingLinks = new List<PagingLink>();
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        _pagingLinks.Clear();
+        _pagingLinks.Add(new PagingLink(CurrentPage - 1, CurrentPage > 1, "Previous"));
+        for (var i = 1; i <= TotalPages; i++)
+        {
+            if (i >= CurrentPage - Spread && i <= CurrentPage + Spread)
+            {
+                _pagingLinks.Add(new PagingLink(i, true, i.ToString()) { Active = CurrentPage == i });
+            }
+        }
+        _pagingLinks.Add(new PagingLink(CurrentPage + 1, CurrentPage < TotalPages, "Next"));
+        base.OnParametersSet();
+    }
+
+    private async Task OnSelectPage(PagingLink link)
+    {
+        if (link.Page == CurrentPage || !link.Enabled)
+            return;
+        CurrentPage = link.Page;
+        await PageChanged.InvokeAsync(CurrentPage);
+    }
+    
+    internal class PagingLink
+    {
+        public int Page { get; }
+        public string Text { get; }
+        public bool Enabled { get; }
+        public bool Active { get; init; }
+
+        public PagingLink(int page, bool enabled, string text)
+        {
+            Page = page;
+            Enabled = enabled;
+            Text = text;
+        }
+    }
+}
