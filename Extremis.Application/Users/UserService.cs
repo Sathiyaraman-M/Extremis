@@ -71,6 +71,7 @@ public class UserService : IUserService
             {
                 UserName = appUser.UserName,
                 FullName = appUser.FullName,
+                Email = appUser.Email,
                 DateOfBirth = appUser.DateOfBirth,
                 City = appUser.City,
                 Country = appUser.Country,
@@ -105,7 +106,9 @@ public class UserService : IUserService
             appUser.Country = request.Country;
             appUser.SingleLineDescription = request.SingleLineDescription;
             appUser.Bio = request.Bio;
-            await _userManager.UpdateAsync(appUser);
+            var result = await _userManager.UpdateAsync(appUser);
+            if (!result.Succeeded)
+                return await Result.FailAsync(result.Errors.Select(x => x.Code + ": " + x.Description).ToList());
             return await Result.SuccessAsync("User successfully updated");
         }
         catch (Exception e)
