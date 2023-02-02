@@ -6,6 +6,7 @@ public class CreateProposalRequestDto
     public string Description { get; set; }
     
     public string Duration { get; set; }
+    public string ProjectId { get; set; }
 
     public DateTime ExpireTime { get; set; }
 }
