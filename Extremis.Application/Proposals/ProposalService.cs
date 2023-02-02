@@ -172,6 +172,7 @@ public class ProposalService : IProposalService
                 CreatedOn = reciprocation.CreatedOn,
                 Id = reciprocation.Id,
                 ReciprocatorId = reciprocation.ReciprocatorId,
+                ReciprocatorName = reciprocation.Reciprocator.FullName,
                 Note = reciprocation.Note,
                 CreatedByUserId = reciprocation.CreatedByUserId,
                 CreatedBy = reciprocation.CreatedBy,
@@ -179,6 +180,7 @@ public class ProposalService : IProposalService
             };
             return await _unitOfWork.GetRepository<Reciprocation>().Entities
                 .Include(x => x.Proposal)
+                .Include(x => x.Reciprocator)
                 .Where(x => x.ProposalId == id && x.Proposal.ProposerId == userId)
                 .Specify(new ReciprocationSearchSpecification(searchString))
                 .OrderByDescending(x => x.CreatedOn)

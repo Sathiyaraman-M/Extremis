@@ -4,6 +4,7 @@ public class ReciprocatorDto
 {
     public string Id { get; set; }
     public string ReciprocatorId { get; set; }
+    public string ReciprocatorName { get; set; }
     public string ProposalId { get; set; }
     public string Note { get; set; }
 
