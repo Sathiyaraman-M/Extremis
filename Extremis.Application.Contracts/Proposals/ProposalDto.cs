@@ -5,6 +5,9 @@ public class ProposalDto
     public string Id { get; set; }
     public string ProposerId { get; set; }
     public string ProposerName { get; set; }
+    public string ProjectId { get; set; }
+    public string ProjectTitle { get; set; }
+    public string ProjectDescription { get; set; }
     
     public string Title { get; set; }
     public string Description { get; set; }
