@@ -7,6 +7,9 @@
             <div class="row">
                 <div class="col-12">
                     <div class="mb-3">
+                        <div>Project: <b>@ProjectName</b></div>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">Title</label>
                         <InputText class="form-control" @bind-Value="@_request.Title" />
                     </div>
@@ -38,8 +41,19 @@
         ExpireTime = DateTime.Now.AddDays(7)
     };
     
+    [Parameter]
+    public string ProjectId { get; set; }
+    
+    [Parameter]
+    public string ProjectName { get; set; }
+    
     [CascadingParameter]
     private DialogInstance Dialog { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        _request.ProjectId = ProjectId;
+    }
 
     private async Task CreateProposal()
     {
