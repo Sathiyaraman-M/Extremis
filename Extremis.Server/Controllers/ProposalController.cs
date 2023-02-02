@@ -31,6 +31,29 @@ public class ProposalController : ControllerBase
         var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
         return Ok(await _proposalService.CloseProposal(projectId, userId));
     }
+    
+    [HttpPost("apply")]
+    public async Task<IActionResult> ApplyForProposal(ApplyForProposalRequestDto request)
+    {
+        var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
+        var userName = HttpContext.User.FindFirstValue(JwtClaimTypes.PreferredUserName);
+        return Ok(await _proposalService.ApplyForProposal(request, userName, userId));
+    }
+    
+    [HttpGet("apply-check")]
+    public async Task<IActionResult> CheckAppliedStatus(string id)
+    {
+        var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
+        return Ok(await _proposalService.CheckApplyStatusProposal(id, userId));
+    }
+    
+    [HttpGet("candidates")]
+    public async Task<IActionResult> GetAllCandidates(int pageNumber, int pageSize, string searchString,
+        string id)
+    {
+        var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
+        return Ok(await _proposalService.GetAllCandidates(pageNumber, pageSize, searchString, id, userId));
+    }
 
     // [HttpGet("mine")]
     // public async Task<IActionResult> GetAllMyProposals(int pageNumber, int pageSize, string searchString,
@@ -61,30 +84,7 @@ public class ProposalController : ControllerBase
     //     var userName = HttpContext.User.FindFirstValue(JwtClaimTypes.PreferredUserName);
     //     return Ok(await _proposalService.InitiateProposal(request, userName, userId));
     // }
-    //
-    // [HttpPost("apply")]
-    // public async Task<IActionResult> ApplyForProposal(ApplyForProposalRequestDto request)
-    // {
-    //     var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
-    //     var userName = HttpContext.User.FindFirstValue(JwtClaimTypes.PreferredUserName);
-    //     return Ok(await _proposalService.ApplyForProposal(request, userName, userId));
-    // }
-    //
-    // [HttpGet("apply-check")]
-    // public async Task<IActionResult> CheckAppliedStatus(string id)
-    // {
-    //     var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
-    //     return Ok(await _proposalService.CheckApplyStatusProposal(id, userId));
-    // }
-    //
-    // [HttpGet("candidates")]
-    // public async Task<IActionResult> GetAllCandidates(int pageNumber, int pageSize, string searchString,
-    //     string id)
-    // {
-    //     var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
-    //     return Ok(await _proposalService.GetAllCandidates(pageNumber, pageSize, searchString, id, userId));
-    // }
-    //
+    
     // [HttpGet("close")]
     // public async Task<IActionResult> CloseProposal(string id)
     // {
