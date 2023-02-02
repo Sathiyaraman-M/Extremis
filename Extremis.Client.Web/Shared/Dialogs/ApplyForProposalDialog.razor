@@ -27,7 +27,7 @@
     [Parameter]
     public string ProposerName { get; set; }
 
-    private ApplyForProposalRequestDto _request = new();
+    private readonly ApplyForProposalRequestDto _request = new();
     
     [CascadingParameter]
     private DialogInstance Dialog { get; set; }
@@ -39,18 +39,18 @@
 
     private async Task Apply()
     {
-        // var result = await ProposalService.ApplyForProposal(_request);
-        // if (result.Succeeded)
-        // {
-        //     Toast.Add("Success", result.Messages.FirstOrDefault(), Severity.Success);
-        //     Dialog.Close();
-        // }
-        // else
-        // {
-        //     foreach (var message in result.Messages)
-        //     {
-        //         Toast.Add("Error", message, Severity.Error);
-        //     }
-        // }
+        var result = await ProposalService.ApplyForProposal(_request);
+        if (result.Succeeded)
+        {
+            Toast.Add("Success", result.Messages.FirstOrDefault(), Severity.Success);
+            Dialog.Close();
+        }
+        else
+        {
+            foreach (var message in result.Messages)
+            {
+                Toast.Add("Error", message, Severity.Error);
+            }
+        }
     }
 }
