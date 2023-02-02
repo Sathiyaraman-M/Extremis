@@ -1,5 +1,8 @@
-﻿using Extremis.Repositories;
+﻿using System.Linq.Expressions;
+using Extremis.Extensions;
+using Extremis.Repositories;
 using Extremis.Wrapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace Extremis.Projects;
 
@@ -11,8 +14,58 @@ public class ProjectService : IProjectService
     {
         _unitOfWork = unitOfWork;
     }
-    
-    public async Task<IResult> CreateProject(CreateProjectDto request, string userName, string userId)
+
+    public async Task<PaginatedResult<ProjectDto>> GetAllMyProjects(int pageNumber, int pageSize, string userId)
+    {
+        try
+        {
+            Expression<Func<Project, ProjectDto>> expression = project => new ProjectDto()
+            {
+                Id = project.Id,
+                Description = project.Description,
+                MembersCount = project.Members.Count,
+                OwnerName = project.Owner.FullName,
+                Title = project.Title
+            };
+            return await _unitOfWork.GetRepository<Project>().Entities
+                .Include(x => x.Owner)
+                .Include(x => x.Members)
+                .Where(x => x.OwnerId == userId)
+                .Select(expression)
+                .ToPaginatedListAsync(pageNumber, pageSize);
+        }
+        catch (Exception e)
+        {
+            return PaginatedResult<ProjectDto>.Failure(new List<string>() { e.Message });
+        }
+    }
+
+    public async Task<PaginatedResult<ProjectDto>> GetAllJoinedProjects(int pageNumber, int pageSize, string userId)
+    {
+        try
+        {
+            Expression<Func<Project, ProjectDto>> expression = project => new ProjectDto()
+            {
+                Id = project.Id,
+                Description = project.Description,
+                MembersCount = project.Members.Count,
+                OwnerName = project.Owner.FullName,
+                Title = project.Title
+            };
+            return await _unitOfWork.GetRepository<Project>().Entities
+                .Include(x => x.Owner)
+                .Include(x => x.Members)
+                .Where(x => x.Members.Any(y => y.MemberId == userId))
+                .Select(expression)
+                .ToPaginatedListAsync(pageNumber, pageSize);
+        }
+        catch (Exception e)
+        {
+            return PaginatedResult<ProjectDto>.Failure(new List<string>() { e.Message });
+        }
+    }
+
+    public async Task<IResult> CreateProject(CreateProjectRequestDto request, string userName, string userId)
     {
         try
         {

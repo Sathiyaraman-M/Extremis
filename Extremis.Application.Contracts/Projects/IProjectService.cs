@@ -4,5 +4,7 @@ namespace Extremis.Projects;
 
 public interface IProjectService
 {
-    Task<IResult> CreateProject(CreateProjectDto request, string userName, string userId);
+    Task<PaginatedResult<ProjectDto>> GetAllMyProjects(int pageNumber, int pageSize, string userId);
+    Task<PaginatedResult<ProjectDto>> GetAllJoinedProjects(int pageNumber, int pageSize, string userId);
+    Task<IResult> CreateProject(CreateProjectRequestDto request, string userName, string userId);
 }
