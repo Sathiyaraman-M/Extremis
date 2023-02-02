@@ -112,6 +112,10 @@ public class ProposalService : IProposalService
     {
         try
         {
+            if (string.IsNullOrEmpty(request.ProjectId))
+            {
+                throw new Exception("Project Not Selected!");
+            }
             var proposal = new Proposal()
             {
                 CreatedBy = userName,
@@ -125,7 +129,8 @@ public class ProposalService : IProposalService
                 ExpireTime = request.ExpireTime,
                 Title = request.Title,
                 ProposerId = userId,
-                Status = ProposalStatus.Open
+                Status = ProposalStatus.Open,
+                ProjectId = request.ProjectId
             };
             await _unitOfWork.GetRepository<Proposal>().AddAsync(proposal);
             await _unitOfWork.Commit();
