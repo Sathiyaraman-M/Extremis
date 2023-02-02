@@ -1,152 +1,152 @@
 ﻿@page "/Proposals"
 @using Extremis.Proposals
-@inject ProposalService ProposalService
-
-<div class="page-body">
-    <div class="container">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="page-title">Your Proposals</h3>
-                <div class="card-actions">
-                    <div class="btn-list align-items-center">
-                        <a href="/explore" class="mx-2">Go back to Explore</a>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col">
-                        <InputText class="form-control" @bind-Value="_searchString" />
-                    </div>
-                    <div class="col-auto">
-                        <button class="btn btn-primary" @onclick="@(() => LoadProposals(1))">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path><path d="M21 21l-6 -6"></path>
-                            </svg>
-                            Search
-                        </button>
-                    </div>
-                </div>
-                @if (_loaded)
-                {
-                    <div class="text-center">
-                        <Pagination CurrentPage="_pageNumber" TotalPages="_totalPages" PageChanged="LoadProposals" />
-                    </div>
-                    <div class="row row-cards">
-                        <div class="space-y">
-                            @foreach (var proposal in _proposals)
-                            {
-                                <div class="card">
-                                    <div class="row g-0">
-                                        <div class="col">
-                                            <div class="card-body">
-                                                <h3>@proposal.Title</h3>
-                                                <span>@proposal.Description</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <div class="card-body">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="btn-list">
-                                                        <a class="btn btn-primary" href="@($"proposals/{proposal.Id}/candidates")">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrows-maximize" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M16 4l4 0l0 4"></path><path d="M14 10l6 -6"></path><path d="M8 20l-4 0l0 -4"></path><path d="M4 20l6 -6"></path><path d="M16 20l4 0l0 -4"></path><path d="M14 14l6 6"></path><path d="M8 4l-4 0l0 4"></path><path d="M4 4l6 6"></path>
-                                                            </svg>
-                                                            See Candidates
-                                                        </a>
-                                                        <button class="btn btn-yellow">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4"></path><path d="M13.5 6.5l4 4"></path>
-                                                            </svg>
-                                                            Edit
-                                                        </button>
-                                                        <button class="btn btn-secondary" @onclick="CloseProposal">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M18 6l-12 12"></path><path d="M6 6l12 12"></path>
-                                                            </svg>
-                                                            Close
-                                                        </button>
-                                                        <button class="btn btn-danger" @onclick="CancelProposal">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-off" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M20.042 16.045a9 9 0 0 0 -12.087 -12.087m-2.318 1.677a9 9 0 1 0 12.725 12.73"></path><path d="M3 3l18 18"></path>
-                                                            </svg>
-                                                            Cancel
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    </div>
-                }
-                else
-                {
-                    <div class="progress progress-sm">
-                        <div class="progress-bar progress-bar-indeterminate"></div>
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
-</div>
-
-
-@code
-{
-    private int _pageNumber = 1;
-    private int _pageSize = 10;
-    private int _totalPages;
-    private string _searchString = "";
-    private bool _loaded;
-    private List<ProposalDto> _proposals = new();
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadProposals(_pageNumber);
-        _loaded = true;
-    }
-
-    private async Task LoadProposals(int pageNumber)
-    {
-        var result = await ProposalService.GetAllMyProposals(pageNumber, _pageSize, _searchString);
-        if (result.Succeeded)
-        {
-            _proposals = result.Data;
-            _totalPages = result.TotalPages;
-        }
-        else
-        {
-            foreach (var message in result.Messages)
-            {
-                Toast.Add("Error", message, Severity.Error);
-            }
-        }
-    }
-
-    private async Task CloseProposal()
-    {
-        var dialogOptions = new DialogOptions()
-        {
-            Position = DialogPosition.Centered
-        };
-        if (await DialogService.ShowMessageBox("Close Proposal?", "Are you sure want to close out this proposal? This means no more people can apply for this proposal any more.", "Yes", "No", options: dialogOptions) == true)
-        {
-                        
-        }
-    }
-
-    private async Task CancelProposal()
-    {
-        var dialogOptions = new DialogOptions()
-        {
-            Position = DialogPosition.Centered
-        };
-        if (await DialogService.ShowMessageBox("Cancel Proposal?", "Are you sure want to cancel this proposal? This means the proposal is not valid anymore.", "Yes", "No", options: dialogOptions) == true)
-        {
-                        
-        }
-    }
-}
+@* @inject ProposalService ProposalService *@
+@* *@
+@* <div class="page-body"> *@
+@*     <div class="container"> *@
+@*         <div class="card"> *@
+@*             <div class="card-header"> *@
+@*                 <h3 class="page-title">Your Proposals</h3> *@
+@*                 <div class="card-actions"> *@
+@*                     <div class="btn-list align-items-center"> *@
+@*                         <a href="/explore" class="mx-2">Go back to Explore</a> *@
+@*                     </div> *@
+@*                 </div> *@
+@*             </div> *@
+@*             <div class="card-body"> *@
+@*                 <div class="row mb-3"> *@
+@*                     <div class="col"> *@
+@*                         <InputText class="form-control" @bind-Value="_searchString" /> *@
+@*                     </div> *@
+@*                     <div class="col-auto"> *@
+@*                         <button class="btn btn-primary" @onclick="@(() => LoadProposals(1))"> *@
+@*                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"> *@
+@*                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path><path d="M21 21l-6 -6"></path> *@
+@*                             </svg> *@
+@*                             Search *@
+@*                         </button> *@
+@*                     </div> *@
+@*                 </div> *@
+@*                 @if (_loaded) *@
+@*                 { *@
+@*                     <div class="text-center"> *@
+@*                         <Pagination CurrentPage="_pageNumber" TotalPages="_totalPages" PageChanged="LoadProposals" /> *@
+@*                     </div> *@
+@*                     <div class="row row-cards"> *@
+@*                         <div class="space-y"> *@
+@*                             @foreach (var proposal in _proposals) *@
+@*                             { *@
+@*                                 <div class="card"> *@
+@*                                     <div class="row g-0"> *@
+@*                                         <div class="col"> *@
+@*                                             <div class="card-body"> *@
+@*                                                 <h3>@proposal.Title</h3> *@
+@*                                                 <span>@proposal.Description</span> *@
+@*                                             </div> *@
+@*                                         </div> *@
+@*                                         <div class="col-auto"> *@
+@*                                             <div class="card-body"> *@
+@*                                                 <div class="d-flex align-items-center"> *@
+@*                                                     <div class="btn-list"> *@
+@*                                                         <a class="btn btn-primary" href="@($"proposals/{proposal.Id}/candidates")"> *@
+@*                                                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrows-maximize" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"> *@
+@*                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M16 4l4 0l0 4"></path><path d="M14 10l6 -6"></path><path d="M8 20l-4 0l0 -4"></path><path d="M4 20l6 -6"></path><path d="M16 20l4 0l0 -4"></path><path d="M14 14l6 6"></path><path d="M8 4l-4 0l0 4"></path><path d="M4 4l6 6"></path> *@
+@*                                                             </svg> *@
+@*                                                             See Candidates *@
+@*                                                         </a> *@
+@*                                                         <button class="btn btn-yellow"> *@
+@*                                                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"> *@
+@*                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4"></path><path d="M13.5 6.5l4 4"></path> *@
+@*                                                             </svg> *@
+@*                                                             Edit *@
+@*                                                         </button> *@
+@*                                                         <button class="btn btn-secondary" @onclick="CloseProposal"> *@
+@*                                                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"> *@
+@*                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M18 6l-12 12"></path><path d="M6 6l12 12"></path> *@
+@*                                                             </svg> *@
+@*                                                             Close *@
+@*                                                         </button> *@
+@*                                                         <button class="btn btn-danger" @onclick="CancelProposal"> *@
+@*                                                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-off" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"> *@
+@*                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M20.042 16.045a9 9 0 0 0 -12.087 -12.087m-2.318 1.677a9 9 0 1 0 12.725 12.73"></path><path d="M3 3l18 18"></path> *@
+@*                                                             </svg> *@
+@*                                                             Cancel *@
+@*                                                         </button> *@
+@*                                                     </div> *@
+@*                                                 </div> *@
+@*                                             </div> *@
+@*                                         </div> *@
+@*                                     </div> *@
+@*                                 </div> *@
+@*                             } *@
+@*                         </div> *@
+@*                     </div> *@
+@*                 } *@
+@*                 else *@
+@*                 { *@
+@*                     <div class="progress progress-sm"> *@
+@*                         <div class="progress-bar progress-bar-indeterminate"></div> *@
+@*                     </div> *@
+@*                 } *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </div> *@
+@* *@
+@* *@
+@* @code *@
+@* { *@
+@*     private int _pageNumber = 1; *@
+@*     private int _pageSize = 10; *@
+@*     private int _totalPages; *@
+@*     private string _searchString = ""; *@
+@*     private bool _loaded; *@
+@*     private List<ProposalDto> _proposals = new(); *@
+@* *@
+@*     protected override async Task OnInitializedAsync() *@
+@*     { *@
+@*         await LoadProposals(_pageNumber); *@
+@*         _loaded = true; *@
+@*     } *@
+@* *@
+@*     private async Task LoadProposals(int pageNumber) *@
+@*     { *@
+@*         var result = await ProposalService.GetAllMyProposals(pageNumber, _pageSize, _searchString); *@
+@*         if (result.Succeeded) *@
+@*         { *@
+@*             _proposals = result.Data; *@
+@*             _totalPages = result.TotalPages; *@
+@*         } *@
+@*         else *@
+@*         { *@
+@*             foreach (var message in result.Messages) *@
+@*             { *@
+@*                 Toast.Add("Error", message, Severity.Error); *@
+@*             } *@
+@*         } *@
+@*     } *@
+@* *@
+@*     private async Task CloseProposal() *@
+@*     { *@
+@*         var dialogOptions = new DialogOptions() *@
+@*         { *@
+@*             Position = DialogPosition.Centered *@
+@*         }; *@
+@*         if (await DialogService.ShowMessageBox("Close Proposal?", "Are you sure want to close out this proposal? This means no more people can apply for this proposal any more.", "Yes", "No", options: dialogOptions) == true) *@
+@*         { *@
+@*                          *@
+@*         } *@
+@*     } *@
+@* *@
+@*     private async Task CancelProposal() *@
+@*     { *@
+@*         var dialogOptions = new DialogOptions() *@
+@*         { *@
+@*             Position = DialogPosition.Centered *@
+@*         }; *@
+@*         if (await DialogService.ShowMessageBox("Cancel Proposal?", "Are you sure want to cancel this proposal? This means the proposal is not valid anymore.", "Yes", "No", options: dialogOptions) == true) *@
+@*         { *@
+@*                          *@
+@*         } *@
+@*     } *@
+@* } *@

@@ -15,12 +15,12 @@
                             </svg>
                             Your Proposals
                         </a>
-                        <button class="btn btn-primary" @onclick="CreateProposal">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path>
-                            </svg>
-                            Create new Proposal
-                        </button>
+                        @* <button class="btn btn-primary" @onclick="CreateProposal"> *@
+                        @*     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"> *@
+                        @*        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path> *@
+                        @*     </svg> *@
+                        @*     Create new Proposal *@
+                        @* </button> *@
                     </div>
                 </div>
             </div>
@@ -30,19 +30,19 @@
                         <InputText class="form-control" @bind-Value="_searchString" />
                     </div>
                     <div class="col-auto">
-                        <button class="btn btn-primary" @onclick="@(() => LoadProposals(1))">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path><path d="M21 21l-6 -6"></path>
-                            </svg>
-                            Search
-                        </button>
+                        @* <button class="btn btn-primary" @onclick="@(() => LoadProposals(1))"> *@
+                        @*     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"> *@
+                        @*         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path><path d="M21 21l-6 -6"></path> *@
+                        @*     </svg> *@
+                        @*     Search *@
+                        @* </button> *@
                     </div>
                 </div>
                 @if (_loaded)
                 {
-                    <div class="text-center">
-                        <Pagination CurrentPage="_pageNumber" TotalPages="_totalPages" PageChanged="LoadProposals" />
-                    </div>
+                    @* <div class="text-center"> *@
+                    @*     <Pagination CurrentPage="_pageNumber" TotalPages="_totalPages" PageChanged="LoadProposals" /> *@
+                    @* </div> *@
                     <div class="row row-cards">
                         <div class="space-y">
                             @foreach (var proposal in _proposals)
@@ -106,70 +106,70 @@
 
 @code
 {
-    private int _pageNumber = 1;
-    private int _pageSize = 10;
-    private int _totalPages;
-    private string _searchString = "";
-    private bool _loaded;
-    private List<ProposalDto> _proposals = new();
-
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadProposals(_pageNumber);
-        _loaded = true;
-    }
-
-    private async Task LoadProposals(int pageNumber)
-    {
-        var result = await ProposalService.GetAllProposals(pageNumber, _pageSize, _searchString);
-        if (result.Succeeded)
-        {
-            _proposals = result.Data;
-            _totalPages = result.TotalPages;
-            foreach (var proposal in _proposals)
-            {
-                proposal.Applied = (await ProposalService.CheckAppliedStatus(proposal.Id)).Data;
-            }
-        }
-        else
-        {
-            foreach (var message in result.Messages)
-            {
-                Toast.Add("Error", message, Severity.Error);
-            }
-        }
-    }
-
-    private async Task CreateProposal()
-    {
-        var options = new DialogOptions()
-        {
-            Position = DialogPosition.Centered
-        };
-        var dialog = DialogService.Show<CreateProposalDialog>("Create Proposal", options);
-        var result = await dialog.Result;
-        if (!result.Cancelled)
-        {
-            NavigationManager.NavigateTo("/proposals");
-        }
-    }
-
-    private async Task ApplyForProposal(string proposerId, string proposerName)
-    {
-        var dialogParameters = new DialogParameters()
-        {
-            { nameof(ApplyForProposalDialog.ProposalId), proposerId },
-            { nameof(ApplyForProposalDialog.ProposerName), proposerName }
-        };
-        var dialogOptions = new DialogOptions()
-        {
-            Position = DialogPosition.Centered
-        };
-        var dialog = DialogService.Show<ApplyForProposalDialog>("Apply for Proposal", dialogParameters, dialogOptions);
-        var result = await dialog.Result;
-        if (!result.Cancelled)
-        {
-            await LoadProposals(_pageNumber);
-        }
-    }
+     private int _pageNumber = 1;
+     private int _pageSize = 10;
+     private int _totalPages;
+     private string _searchString = "";
+     private bool _loaded;
+     private List<ProposalDto> _proposals = new();
+@* *@
+@*     protected override async Task OnInitializedAsync() *@
+@*     { *@
+@*         await LoadProposals(_pageNumber); *@
+@*         _loaded = true; *@
+@*     } *@
+@* *@
+@*     private async Task LoadProposals(int pageNumber) *@
+@*     { *@
+@*         var result = await ProposalService.GetAllProposals(pageNumber, _pageSize, _searchString); *@
+@*         if (result.Succeeded) *@
+@*         { *@
+@*             _proposals = result.Data; *@
+@*             _totalPages = result.TotalPages; *@
+@*             foreach (var proposal in _proposals) *@
+@*             { *@
+@*                 proposal.Applied = (await ProposalService.CheckAppliedStatus(proposal.Id)).Data; *@
+@*             } *@
+@*         } *@
+@*         else *@
+@*         { *@
+@*             foreach (var message in result.Messages) *@
+@*             { *@
+@*                 Toast.Add("Error", message, Severity.Error); *@
+@*             } *@
+@*         } *@
+@*     } *@
+@* *@
+@*     private async Task CreateProposal() *@
+@*     { *@
+@*         var options = new DialogOptions() *@
+@*         { *@
+@*             Position = DialogPosition.Centered *@
+@*         }; *@
+@*         var dialog = DialogService.Show<CreateProposalDialog>("Create Proposal", options); *@
+@*         var result = await dialog.Result; *@
+@*         if (!result.Cancelled) *@
+@*         { *@
+@*             NavigationManager.NavigateTo("/proposals"); *@
+@*         } *@
+@*     } *@
+@* *@
+     // private async Task ApplyForProposal(string proposerId, string proposerName)
+     // {
+     //     var dialogParameters = new DialogParameters()
+     //     {
+     //         { nameof(ApplyForProposalDialog.ProposalId), proposerId },
+     //         { nameof(ApplyForProposalDialog.ProposerName), proposerName }
+     //     };
+     //     var dialogOptions = new DialogOptions()
+     //     {
+     //         Position = DialogPosition.Centered
+     //     };
+     //     var dialog = DialogService.Show<ApplyForProposalDialog>("Apply for Proposal", dialogParameters, dialogOptions);
+     //     var result = await dialog.Result;
+     //     if (!result.Cancelled)
+     //     {
+     //         await LoadProposals(_pageNumber);
+     //     }
+     // }
 }

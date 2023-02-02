@@ -119,23 +119,23 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var proposalResult = await ProposalService.GetProposal(Id);
-        if (proposalResult.Succeeded)
-        {
-            _proposal = proposalResult.Data;
-            var userId = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue(JwtClaimTypes.Subject);
-            if (_proposal.ProposerId != userId)
-            {
-                NavigationManager.NavigateTo("Explore");
-            }
-            await LoadReciprocators(_pageNumber);
-            _loaded = true;
-        }
-        else
-        {
-            Toast.Add("Error", "Specified Proposal not found!", Severity.Error);
-            NavigationManager.NavigateTo("Explore");
-        }
+        // var proposalResult = await ProposalService.GetProposal(Id);
+        // if (proposalResult.Succeeded)
+        // {
+        //     _proposal = proposalResult.Data;
+        //     var userId = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue(JwtClaimTypes.Subject);
+        //     if (_proposal.ProposerId != userId)
+        //     {
+        //         NavigationManager.NavigateTo("Explore");
+        //     }
+        //     await LoadReciprocators(_pageNumber);
+        //     _loaded = true;
+        // }
+        // else
+        // {
+        //     Toast.Add("Error", "Specified Proposal not found!", Severity.Error);
+        //     NavigationManager.NavigateTo("Explore");
+        // }
     }
 
     private async Task LoadReciprocators(int pageNumber)
