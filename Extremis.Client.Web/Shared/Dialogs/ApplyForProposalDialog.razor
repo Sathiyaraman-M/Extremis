@@ -1,0 +1,56 @@
+﻿@inject ProposalService ProposalService
+@using Extremis.Proposals
+<EditForm Model="_request" OnValidSubmit="Apply">
+    <Dialog>
+        <DialogContent>
+            <div class="row">
+                <div class="col-12">
+                    <div class="mb-3">
+                        <div class="form-label">You can also add a personalized note to @ProposerName</div>
+                        <InputText class="form-control" @bind-Value="_request.Note" />
+                    </div>
+                </div>
+            </div>
+        </DialogContent>
+        <DialogActions>
+            <button class="btn" @onclick="@(() => Dialog.Cancel())">Cancel</button>
+            <button class="btn btn-primary" type="submit">Apply</button>
+        </DialogActions>
+    </Dialog>
+</EditForm>
+
+@code
+{
+    [Parameter]
+    public string ProposalId { get; set; }
+    
+    [Parameter]
+    public string ProposerName { get; set; }
+
+    private ApplyForProposalRequestDto _request = new();
+    
+    [CascadingParameter]
+    private DialogInstance Dialog { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        _request.ProposalId = ProposalId;
+    }
+
+    private async Task Apply()
+    {
+        var result = await ProposalService.ApplyForProposal(_request);
+        if (result.Succeeded)
+        {
+            Toast.Add("Success", result.Messages.FirstOrDefault(), Severity.Success);
+            Dialog.Close();
+        }
+        else
+        {
+            foreach (var message in result.Messages)
+            {
+                Toast.Add("Error", message, Severity.Error);
+            }
+        }
+    }
+}

@@ -47,6 +47,7 @@
         if (result.Succeeded)
         {
             Toast.Add("Success", result.Messages.FirstOrDefault(), Severity.Success);
+            Dialog.Close();
         }
         else
         {

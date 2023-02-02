@@ -68,7 +68,7 @@
                                                                 <button class="btn btn-secondary" disabled>Cancelled</button>
                                                                 break;
                                                             case ProposalStatus.Open:
-                                                                <button class="btn btn-success">Apply</button>
+                                                                <button class="btn btn-success" @onclick="(() => ApplyForProposal(proposal.Id, proposal.ProposerName))">Apply</button>
                                                                 break;
                                                         }
                                                     </div>
@@ -136,5 +136,20 @@
         {
             
         }
+    }
+
+    private async Task ApplyForProposal(string proposerId, string proposerName)
+    {
+        var dialogParameters = new DialogParameters()
+        {
+            { nameof(ApplyForProposalDialog.ProposalId), proposerId },
+            { nameof(ApplyForProposalDialog.ProposerName), proposerName }
+        };
+        var dialogOptions = new DialogOptions()
+        {
+            Position = DialogPosition.Centered
+        };
+        var dialog = DialogService.Show<ApplyForProposalDialog>("Apply for Proposal", dialogParameters, dialogOptions);
+        var result = await dialog.Result;
     }
 }
