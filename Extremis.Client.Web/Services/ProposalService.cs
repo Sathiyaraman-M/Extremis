@@ -25,6 +25,12 @@ public class ProposalService
     {
         return await _httpClient.GetFromJsonAsync<Result>($"api/proposals/close?projectId={projectId}");
     }
+    
+    public async Task<PaginatedResult<ProposalDto>> GetAllProposals(int pageNumber, int pageSize, string searchString)
+    {
+        return await _httpClient.GetFromJsonAsync<PaginatedResult<ProposalDto>>($"api/proposals?pageNumber={pageNumber}&pageSize={pageSize}&searchString={searchString}");
+    }
+
     public async Task<IResult> ApplyForProposal(ApplyForProposalRequestDto request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/proposals/apply", request);
@@ -45,12 +51,6 @@ public class ProposalService
     // {
     //     return await _httpClient.GetFromJsonAsync<PaginatedResult<ProposalDto>>($"api/proposals/mine?pageNumber={pageNumber}&pageSize={pageSize}&searchString={searchString}");
     // }
-    //
-    // public async Task<PaginatedResult<ProposalDto>> GetAllProposals(int pageNumber, int pageSize, string searchString)
-    // {
-    //     return await _httpClient.GetFromJsonAsync<PaginatedResult<ProposalDto>>($"api/proposals?pageNumber={pageNumber}&pageSize={pageSize}&searchString={searchString}");
-    // }
-    //
     // public async Task<IResult<ProposalDto>> GetProposal(string id)
     // {
     //     return await _httpClient.GetFromJsonAsync<Result<ProposalDto>>($"api/proposals/{id}");

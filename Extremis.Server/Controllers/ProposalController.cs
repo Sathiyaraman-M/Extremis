@@ -32,6 +32,14 @@ public class ProposalController : ControllerBase
         return Ok(await _proposalService.CloseProposal(projectId, userId));
     }
     
+    [HttpGet]
+    public async Task<IActionResult> GetAllProposals(int pageNumber, int pageSize, string searchString,
+        string orderBy = null)
+    {
+        var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
+        return Ok(await _proposalService.GetAllProposals(pageNumber, pageSize, searchString, orderBy, userId));
+    }
+    
     [HttpPost("apply")]
     public async Task<IActionResult> ApplyForProposal(ApplyForProposalRequestDto request)
     {
@@ -62,15 +70,7 @@ public class ProposalController : ControllerBase
     //     var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
     //     return Ok(await _proposalService.GetAllMyProposals(pageNumber, pageSize, searchString, userId));
     // }
-    //
-    // [HttpGet]
-    // public async Task<IActionResult> GetAllProposals(int pageNumber, int pageSize, string searchString,
-    //     string orderBy = null)
-    // {
-    //     var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
-    //     return Ok(await _proposalService.GetAllProposals(pageNumber, pageSize, searchString, orderBy, userId));
-    // }
-    //
+    
     // [HttpGet("{id}")]
     // public async Task<IActionResult> GetProposal(string id)
     // {

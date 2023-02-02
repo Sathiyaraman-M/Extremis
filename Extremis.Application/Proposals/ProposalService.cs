@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Extremis.Extensions;
+using Extremis.Projects;
 using Extremis.Repositories;
 using Extremis.Specifications;
 using Extremis.Wrapper;
@@ -47,39 +48,6 @@ public class ProposalService : IProposalService
     //         return PaginatedResult<ProposalDto>.Failure(new List<string>() { e.Message });
     //     }
     // }
-    //
-    // public async Task<PaginatedResult<ProposalDto>> GetAllProposals(int pageNumber, int pageSize, string searchString, string orderBy, string userId)
-    // {
-    //     try
-    //     {
-    //         Expression<Func<Proposal, ProposalDto>> expression = proposal => new ProposalDto()
-    //         {
-    //             CreatedOn = proposal.CreatedOn,
-    //             Description = proposal.Description,
-    //             Duration = proposal.Duration,
-    //             ExpireTime = proposal.ExpireTime,
-    //             Id = proposal.Id,
-    //             LastModifiedOn = proposal.LastModifiedOn,
-    //             ProposerId = proposal.ProposerId,
-    //             ProposerName = proposal.Proposer.FullName,
-    //             Status = proposal.Status,
-    //             Title = proposal.Title,
-    //         };
-    //         return await _unitOfWork.GetRepository<Proposal>().Entities
-    //             .Include(x => x.Proposer)
-    //             .Where(x => x.ProposerId != userId)
-    //             .Specify(new ProposalSearchSpecification(searchString))
-    //             .OrderByDescending(x => x.CreatedOn)
-    //             .ThenByDescending(x => x.LastModifiedOn)
-    //             .Select(expression)
-    //             .ToPaginatedListAsync(pageNumber, pageSize);
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return PaginatedResult<ProposalDto>.Failure(new List<string>() { e.Message });
-    //     }
-    // }
-    //
     // public async Task<IResult<ProposalDto>> GetProposal(string id)
     // {
     //     try
@@ -149,13 +117,58 @@ public class ProposalService : IProposalService
     //     }
     // }
     
+    public async Task<PaginatedResult<ProposalDto>> GetAllProposals(int pageNumber, int pageSize, string searchString, string orderBy, string userId)
+    {
+        try
+        {
+            Expression<Func<Proposal, ProposalDto>> expression = proposal => new ProposalDto()
+            {
+                CreatedOn = proposal.CreatedOn,
+                Description = proposal.Description,
+                Duration = proposal.Duration,
+                Id = proposal.Id,
+                LastModifiedOn = proposal.LastModifiedOn,
+                ProposerId = proposal.ProposerId,
+                ProposerName = proposal.Proposer.FullName,
+                Title = proposal.Title,
+            };
+            return await _unitOfWork.GetRepository<Proposal>().Entities
+                .Include(x => x.Proposer)
+                .Where(x => x.ProposerId != userId)
+                .Specify(new ProposalSearchSpecification(searchString))
+                .OrderByDescending(x => x.CreatedOn)
+                .ThenByDescending(x => x.LastModifiedOn)
+                .Select(expression)
+                .ToPaginatedListAsync(pageNumber, pageSize);
+        }
+        catch (Exception e)
+        {
+            return PaginatedResult<ProposalDto>.Failure(new List<string>() { e.Message });
+        }
+    }
+
+    
     public async Task<IResult<bool>> CheckApplyStatusProposal(string id, string userId)
     {
         try
         {
             var application = await _unitOfWork.GetRepository<Reciprocation>()
-                .Entities.FirstOrDefaultAsync(x => x.ProposalId == id && x.ReciprocatorId == userId);
-            return await Result<bool>.SuccessAsync(application != null);
+                .Entities
+                .Include(x => x.Proposal)
+                .FirstOrDefaultAsync(x => x.ProposalId == id && x.ReciprocatorId == userId);
+            if (application != null) 
+                return await Result<bool>.SuccessAsync(false);
+            var proposal = await _unitOfWork.GetRepository<Proposal>().Entities
+                .FirstOrDefaultAsync(x => x.Id == id);
+            var project = await _unitOfWork.GetRepository<Project>().Entities
+                .Include(x => x.Members)
+                .FirstOrDefaultAsync(x => proposal.ProjectId == userId);
+            if (project == null)
+            {
+                throw new Exception("Proposal Not Found!");
+            }
+            return await Result<bool>.SuccessAsync(project.Members.All(x => x.MemberId != userId));
+            
         }
         catch (Exception e)
         {
@@ -207,7 +220,7 @@ public class ProposalService : IProposalService
             return await _unitOfWork.GetRepository<Reciprocation>().Entities
                 .Include(x => x.Proposal)
                 .Include(x => x.Reciprocator)
-                .Where(x => x.ProposalId == id && x.Proposal.ProposerId == userId)
+                .Where(x => x.ProposalId == id || x.Proposal.ProposerId == userId)
                 .Specify(new ReciprocationSearchSpecification(searchString))
                 .OrderByDescending(x => x.CreatedOn)
                 .ThenByDescending(x => x.LastModifiedOn)
@@ -219,43 +232,6 @@ public class ProposalService : IProposalService
             return PaginatedResult<ReciprocatorDto>.Failure(new List<string>() { e.Message });
         }
     }
-    
-    // public async Task<IResult> CloseProposal(string projectId, string userId)
-    // {
-    //     try
-    //     {
-    //         var proposal = await _unitOfWork.GetRepository<Proposal>().GetByIdAsync(projectId);
-    //         if (proposal.ProposerId != userId)
-    //             throw new Exception("Cannot close proposal which you didn't create");
-    //         proposal.Status = ProposalStatus.Closed;
-    //         await _unitOfWork.GetRepository<Proposal>().UpdateAsync(proposal, projectId);
-    //         await _unitOfWork.Commit();
-    //         return await Result.FailAsync("Closed Proposal Successfully");
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return await Result.FailAsync(e.Message);
-    //     }
-    // }
-    //
-    // public async Task<IResult> CancelProposal(string id, string userId)
-    // {
-    //     try
-    //     {
-    //         var proposal = await _unitOfWork.GetRepository<Proposal>().GetByIdAsync(id);
-    //         if (proposal.ProposerId != userId)
-    //             throw new Exception("Cannot cancel proposal which you didn't create");
-    //         proposal.Status = ProposalStatus.Closed;
-    //         // TODO: Have to consider the reciprocators who were accepted initially
-    //         await _unitOfWork.GetRepository<Proposal>().UpdateAsync(proposal, id);
-    //         await _unitOfWork.Commit();
-    //         return await Result.FailAsync("Cancelled Proposal Successfully");
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return await Result.FailAsync(e.Message);
-    //     }
-    // }
 
     public async Task<IResult<bool>> IsProposalPresent(string projectId)
     {
