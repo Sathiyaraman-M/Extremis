@@ -3,6 +3,6 @@
 public enum ProposalStatus
 {
     Open,
-    Accepted,
-    Closed 
+    Closed, //Means ending proposal on success
+    Cancelled
 }
