@@ -1,6 +1,8 @@
 ﻿using System.Linq.Expressions;
 using Extremis.Extensions;
+using Extremis.Proposals;
 using Extremis.Repositories;
+using Extremis.Users;
 using Extremis.Wrapper;
 using Microsoft.EntityFrameworkCore;
 
@@ -135,6 +137,43 @@ public class ProjectService : IProjectService
                 LastModifiedBy = userName
             };
             await _unitOfWork.GetRepository<Project>().AddAsync(project);
+            await _unitOfWork.Commit();
+            return await Result.SuccessAsync("Created Project Successfully");
+        }
+        catch (Exception e)
+        {
+            return await Result.FailAsync(e.Message);
+        }
+    }
+
+    public async Task<IResult> AddMember(string reciprocationId, string userId)
+    {
+        try
+        {
+            var reciprocation = await _unitOfWork.GetRepository<Reciprocation>().Entities
+                .Include(x => x.Reciprocator)
+                .Include(x => x.Proposal)
+                .ThenInclude(x => x.Project)
+                .ThenInclude(x => x.Members)
+                .FirstOrDefaultAsync(x => x.Id == reciprocationId);
+            if (reciprocation == null)
+            {
+                throw new Exception("Candidate Not Found!");
+            }
+
+            var project = await _unitOfWork.GetRepository<Project>().Entities
+                .FirstOrDefaultAsync(x => x.Id == reciprocation.Proposal.ProjectId);
+            var user = await _unitOfWork.GetRepository<AppUser>().Entities
+                .FirstOrDefaultAsync(x => x.Id == reciprocation.ReciprocatorId);
+            var newMember = new ProjectMember()
+            {
+                Id = Guid.NewGuid().ToString(),
+                MemberId = user.Id,
+                ProjectId = reciprocation.Proposal.ProjectId
+            };
+            project.Members.Add(newMember);
+            await _unitOfWork.GetRepository<Project>().UpdateAsync(project, project.Id);
+            await _unitOfWork.GetRepository<Reciprocation>().DeleteAsync(reciprocation);
             await _unitOfWork.Commit();
             return await Result.SuccessAsync("Created Project Successfully");
         }

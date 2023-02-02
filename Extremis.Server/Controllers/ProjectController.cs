@@ -46,4 +46,11 @@ public class ProjectController : Controller
         var userName = HttpContext.User.FindFirstValue(JwtClaimTypes.PreferredUserName);
         return Ok(await _projectService.CreateProject(request, userName, userId));
     }
+    
+    [HttpGet("members/new")]
+    public async Task<IActionResult> AddMember(string applicationId)
+    {
+        var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
+        return Ok(await _projectService.AddMember(applicationId, userId));
+    }
 }

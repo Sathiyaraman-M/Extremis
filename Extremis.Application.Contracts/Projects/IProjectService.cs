@@ -9,4 +9,5 @@ public interface IProjectService
     Task<IResult<ProjectFullDto>> GetProjectFullInfo(string id, string userId);
     Task<IResult<List<(string, string)>>> GetAllProjectsList(string userId);
     Task<IResult> CreateProject(CreateProjectRequestDto request, string userName, string userId);
+    Task<IResult> AddMember(string reciprocationId, string userId);
 }
