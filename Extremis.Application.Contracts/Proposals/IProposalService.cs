@@ -10,4 +10,6 @@ public interface IProposalService
      Task<IResult> CreateProposal(CreateProposalRequestDto request, string userName, string userId);
      Task<IResult> ApplyForProposal(ApplyForProposalRequestDto request, string userName, string userId);
      Task<PaginatedResult<ReciprocatorDto>> GetAllCandidates(int pageNumber, int pageSize, string searchString, string id, string userId);
+     Task<IResult> CloseProposal(string id, string userId);
+     Task<IResult> CancelProposal(string id, string userId);
 }

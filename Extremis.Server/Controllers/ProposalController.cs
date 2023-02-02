@@ -55,4 +55,18 @@ public class ProposalController : ControllerBase
         var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
         return Ok(await _proposalService.GetAllCandidates(pageNumber, pageSize, searchString, id, userId));
     }
+
+    [HttpGet("close")]
+    public async Task<IActionResult> CloseProposal(string id)
+    {
+        var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
+        return Ok(await _proposalService.CloseProposal(id, userId));
+    }
+
+    [HttpGet("cancel")]
+    public async Task<IActionResult> CancelProposal(string id)
+    {
+        var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
+        return Ok(await _proposalService.CancelProposal(id, userId));
+    }
 }

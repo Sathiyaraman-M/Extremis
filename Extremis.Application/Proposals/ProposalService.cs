@@ -191,4 +191,41 @@ public class ProposalService : IProposalService
             return PaginatedResult<ReciprocatorDto>.Failure(new List<string>() { e.Message });
         }
     }
+
+    public async Task<IResult> CloseProposal(string id, string userId)
+    {
+        try
+        {
+            var proposal = await _unitOfWork.GetRepository<Proposal>().GetByIdAsync(id);
+            if (proposal.ProposerId != userId)
+                throw new Exception("Cannot close proposal which you didn't create");
+            proposal.Status = ProposalStatus.Closed;
+            await _unitOfWork.GetRepository<Proposal>().UpdateAsync(proposal, id);
+            await _unitOfWork.Commit();
+            return await Result.FailAsync("Closed Proposal Successfully");
+        }
+        catch (Exception e)
+        {
+            return await Result.FailAsync(e.Message);
+        }
+    }
+
+    public async Task<IResult> CancelProposal(string id, string userId)
+    {
+        try
+        {
+            var proposal = await _unitOfWork.GetRepository<Proposal>().GetByIdAsync(id);
+            if (proposal.ProposerId != userId)
+                throw new Exception("Cannot cancel proposal which you didn't create");
+            proposal.Status = ProposalStatus.Closed;
+            // TODO: Have to consider the reciprocators who were accepted initially
+            await _unitOfWork.GetRepository<Proposal>().UpdateAsync(proposal, id);
+            await _unitOfWork.Commit();
+            return await Result.FailAsync("Cancelled Proposal Successfully");
+        }
+        catch (Exception e)
+        {
+            return await Result.FailAsync(e.Message);
+        }
+    }
 }

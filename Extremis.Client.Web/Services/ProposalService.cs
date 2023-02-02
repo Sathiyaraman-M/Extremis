@@ -49,4 +49,24 @@ public class ProposalService
     {
         return await _httpClient.GetFromJsonAsync<PaginatedResult<ReciprocatorDto>>($"api/proposals/candidates?pageNumber={pageNumber}&pageSize={pageSize}&searchString={searchString}&id={id}");
     }
+
+    public async Task<IResult> CloseProposal(Guid id)
+    {
+        return await _httpClient.GetFromJsonAsync<Result>($"api/proposals/close?id={id}");
+    }
+
+    public async Task<IResult> CloseProposal(string id)
+    {
+        return await _httpClient.GetFromJsonAsync<Result>($"api/proposals/close?id={id}");
+    }
+
+    public async Task<IResult> CancelProposal(Guid id)
+    {
+        return await _httpClient.GetFromJsonAsync<Result>($"api/proposals/cancel?id={id}");
+    }
+
+    public async Task<IResult> CancelProposal(string id)
+    {
+        return await _httpClient.GetFromJsonAsync<Result>($"api/proposals/cancel?id={id}");
+    }
 }
