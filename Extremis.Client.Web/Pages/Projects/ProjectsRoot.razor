@@ -8,26 +8,24 @@
             <div class="row">
                 <div class="col-md-3">
                     <div class="list-group list-group-flush">
-                        <div class="list-group-item">
-                              <div class="row align-items-center">
-                                  <div class="col text-truncate">
-                                      <a href="#" class="text-reset d-block">My Projects</a>
-                                  </div>
-                              </div>
-                        </div>
-                        <div class="list-group-item">
-                              <div class="row align-items-center">
-                                  <div class="col text-truncate">
-                                      <a href="#" class="text-reset d-block">Joined Projects</a>
-                                  </div>
-                              </div>
-                        </div>
+                        <a @onclick="(() => TogglePageMode(PageMode.MyProjects))" class="list-group-item list-group-item-action @(_currentMode == PageMode.MyProjects ? "active" : "")">
+                            <span class="text-reset">My Projects</span>
+                        </a>
+                        <a @onclick="(() => TogglePageMode(PageMode.JoinedProjects))" class="list-group-item list-group-item-action @(_currentMode == PageMode.JoinedProjects ? "active" : "")">
+                            <span class="text-reset">Joined Projects</span>
+                        </a>    
                     </div>
                 </div>
                 <div class="col-md-9">
-                    <div class="card-body">
-                        <span>Content goes here!</span>
-                    </div>
+                    @switch (_currentMode)
+                    {
+                        case PageMode.MyProjects:
+                            <MyProjects />
+                            break;
+                        case PageMode.JoinedProjects:
+                            <JoinedProjects />
+                            break;
+                    }
                 </div>
             </div>
         </div>
@@ -43,4 +41,6 @@
     }
 
     private PageMode _currentMode = PageMode.MyProjects;
+
+    private void TogglePageMode(PageMode pageMode) => _currentMode = pageMode;
 }
