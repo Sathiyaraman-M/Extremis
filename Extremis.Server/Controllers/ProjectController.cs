@@ -2,6 +2,7 @@
 
 namespace Extremis.Controllers;
 
+[Authorize]
 [Route("api/projects")]
 [ApiController]
 public class ProjectController : Controller

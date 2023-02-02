@@ -2,6 +2,7 @@
 
 namespace Extremis.Controllers;
 
+[Authorize]
 [Route("api/proposals")]
 [ApiController]
 public class ProposalController : ControllerBase

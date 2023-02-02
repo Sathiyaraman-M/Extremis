@@ -2,6 +2,7 @@
 
 namespace Extremis.Controllers;
 
+[Authorize]
 [Route("api/users")]
 [ApiController]
 public class UserController : ControllerBase
