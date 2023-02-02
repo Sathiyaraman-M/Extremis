@@ -25,11 +25,13 @@
                     @switch (_currentMode)
                     {
                         case PageMode.MyProjects:
-                            <MyProjects />
+                            <MyProjects @ref="_myProjectsComponent" />
                             break;
                         case PageMode.JoinedProjects:
-                            <JoinedProjects />
+                            <JoinedProjects @ref="_joinedProjectsComponent" />
                             break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
                 </div>
             </div>
@@ -47,6 +49,9 @@
 
     private PageMode _currentMode = PageMode.MyProjects;
 
+    private MyProjects _myProjectsComponent;
+    private JoinedProjects _joinedProjectsComponent;
+
     private void TogglePageMode(PageMode pageMode) => _currentMode = pageMode;
 
     private async Task CreateProject()
@@ -55,7 +60,17 @@
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
-            
+            switch (_currentMode)
+            {
+                case PageMode.MyProjects:
+                    await _myProjectsComponent.Load();
+                    break;
+                case PageMode.JoinedProjects:
+                    await _joinedProjectsComponent.Load();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }
