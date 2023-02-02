@@ -1,6 +1,6 @@
 ﻿using Duende.IdentityServer.EntityFramework.Options;
+using Extremis.Projects;
 using Extremis.Proposals;
-using Extremis.Servers;
 using Extremis.Users;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Identity;
@@ -17,7 +17,8 @@ public class AppDbContext: ApiAuthorizationDbContext<AppUser>
         
     }
     
-    public DbSet<Server> Servers { get; set; }
+    //public DbSet<Server> Servers { get; set; }
+    public DbSet<Project> Projects { get; set; }
     public DbSet<Proposal> Proposals { get; set; }
     public DbSet<Reciprocation> Reciprocations { get; set; }
 
@@ -53,8 +54,8 @@ public class AppDbContext: ApiAuthorizationDbContext<AppUser>
         builder.Entity<IdentityUserToken<string>>()
             .ToTable("UserTokens");
 
-        builder.Entity<Server>()
-            .ToTable("Servers")
+        builder.Entity<Project>()
+            .ToTable("Projects")
             .Property(x => x.Id)
             .ValueGeneratedOnAdd();
 
