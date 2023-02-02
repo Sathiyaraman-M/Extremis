@@ -148,78 +148,78 @@ public class ProposalService : IProposalService
     //         return await Result.FailAsync(e.Message);
     //     }
     // }
-    //
-    // public async Task<IResult> ApplyForProposal(ApplyForProposalRequestDto request, string userName, string userId)
-    // {
-    //     try
-    //     {
-    //         var reciprocation = new Reciprocation()
-    //         {
-    //             CreatedBy = userName,
-    //             CreatedByUserId = userId,
-    //             CreatedOn = DateTime.Now,
-    //             Note = request.Note,
-    //             ProposalId = request.ProposalId,
-    //             ReciprocatorId = userId,
-    //             LastModifiedByUserId = userId,
-    //             LastModifiedBy = userName,
-    //             LastModifiedOn = DateTime.Now
-    //         };
-    //         await _unitOfWork.GetRepository<Reciprocation>().AddAsync(reciprocation);
-    //         await _unitOfWork.Commit();
-    //         return await Result.SuccessAsync();
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return await Result.FailAsync(e.Message);
-    //     }
-    // }
-    //
-    // public async Task<IResult<bool>> CheckApplyStatusProposal(string id, string userId)
-    // {
-    //     try
-    //     {
-    //         var application = await _unitOfWork.GetRepository<Reciprocation>()
-    //             .Entities.FirstOrDefaultAsync(x => x.ProposalId == id && x.ReciprocatorId == userId);
-    //         return await Result<bool>.SuccessAsync(application != null);
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return await Result<bool>.FailAsync(e.Message);
-    //     }
-    // }
-    //
-    // public async Task<PaginatedResult<ReciprocatorDto>> GetAllCandidates(int pageNumber, int pageSize, string searchString, string id, string userId)
-    // {
-    //     try
-    //     {
-    //         Expression<Func<Reciprocation, ReciprocatorDto>> expression = reciprocation => new ReciprocatorDto()
-    //         {
-    //             CreatedOn = reciprocation.CreatedOn,
-    //             Id = reciprocation.Id,
-    //             ReciprocatorId = reciprocation.ReciprocatorId,
-    //             ReciprocatorName = reciprocation.Reciprocator.FullName,
-    //             Note = reciprocation.Note,
-    //             CreatedByUserId = reciprocation.CreatedByUserId,
-    //             CreatedBy = reciprocation.CreatedBy,
-    //             ProposalId = reciprocation.ProposalId
-    //         };
-    //         return await _unitOfWork.GetRepository<Reciprocation>().Entities
-    //             .Include(x => x.Proposal)
-    //             .Include(x => x.Reciprocator)
-    //             .Where(x => x.ProposalId == id && x.Proposal.ProposerId == userId)
-    //             .Specify(new ReciprocationSearchSpecification(searchString))
-    //             .OrderByDescending(x => x.CreatedOn)
-    //             .ThenByDescending(x => x.LastModifiedOn)
-    //             .Select(expression)
-    //             .ToPaginatedListAsync(pageNumber, pageSize);
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return PaginatedResult<ReciprocatorDto>.Failure(new List<string>() { e.Message });
-    //     }
-    // }
-    //
+    
+    public async Task<IResult<bool>> CheckApplyStatusProposal(string id, string userId)
+    {
+        try
+        {
+            var application = await _unitOfWork.GetRepository<Reciprocation>()
+                .Entities.FirstOrDefaultAsync(x => x.ProposalId == id && x.ReciprocatorId == userId);
+            return await Result<bool>.SuccessAsync(application != null);
+        }
+        catch (Exception e)
+        {
+            return await Result<bool>.FailAsync(e.Message);
+        }
+    }
+    
+    public async Task<IResult> ApplyForProposal(ApplyForProposalRequestDto request, string userName, string userId)
+    {
+        try
+        {
+            var reciprocation = new Reciprocation()
+            {
+                CreatedBy = userName,
+                CreatedByUserId = userId,
+                CreatedOn = DateTime.Now,
+                Note = request.Note,
+                ProposalId = request.ProposalId,
+                ReciprocatorId = userId,
+                LastModifiedByUserId = userId,
+                LastModifiedBy = userName,
+                LastModifiedOn = DateTime.Now
+            };
+            await _unitOfWork.GetRepository<Reciprocation>().AddAsync(reciprocation);
+            await _unitOfWork.Commit();
+            return await Result.SuccessAsync();
+        }
+        catch (Exception e)
+        {
+            return await Result.FailAsync(e.Message);
+        }
+    }
+    
+    public async Task<PaginatedResult<ReciprocatorDto>> GetAllCandidates(int pageNumber, int pageSize, string searchString, string id, string userId)
+    {
+        try
+        {
+            Expression<Func<Reciprocation, ReciprocatorDto>> expression = reciprocation => new ReciprocatorDto()
+            {
+                CreatedOn = reciprocation.CreatedOn,
+                Id = reciprocation.Id,
+                ReciprocatorId = reciprocation.ReciprocatorId,
+                ReciprocatorName = reciprocation.Reciprocator.FullName,
+                Note = reciprocation.Note,
+                CreatedByUserId = reciprocation.CreatedByUserId,
+                CreatedBy = reciprocation.CreatedBy,
+                ProposalId = reciprocation.ProposalId
+            };
+            return await _unitOfWork.GetRepository<Reciprocation>().Entities
+                .Include(x => x.Proposal)
+                .Include(x => x.Reciprocator)
+                .Where(x => x.ProposalId == id && x.Proposal.ProposerId == userId)
+                .Specify(new ReciprocationSearchSpecification(searchString))
+                .OrderByDescending(x => x.CreatedOn)
+                .ThenByDescending(x => x.LastModifiedOn)
+                .Select(expression)
+                .ToPaginatedListAsync(pageNumber, pageSize);
+        }
+        catch (Exception e)
+        {
+            return PaginatedResult<ReciprocatorDto>.Failure(new List<string>() { e.Message });
+        }
+    }
+    
     // public async Task<IResult> CloseProposal(string projectId, string userId)
     // {
     //     try

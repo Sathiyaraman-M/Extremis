@@ -50,7 +50,7 @@
 
     private async Task CreateProposal()
     {
-        var result = await ProposalService.CreateProposal(_request);
+        var result = await ProposalService.InitiateProposal(_request);
         if (result.Succeeded)
         {
             Toast.Add("Success", result.Messages.FirstOrDefault(), Severity.Success);
