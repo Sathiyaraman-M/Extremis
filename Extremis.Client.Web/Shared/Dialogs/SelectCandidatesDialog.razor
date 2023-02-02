@@ -1,0 +1,87 @@
+﻿@using Extremis.Proposals
+@inject ProposalService ProposalService
+@inject ProjectService ProjectService
+<Dialog>
+    <DialogContent>
+        <Pagination CurrentPage="_pageNumber" TotalPages="_totalPages" PageChanged="LoadCandidates" />
+        <div class="list-group list-group-flush">
+            @foreach (var application in _applications)
+            {
+                <div class="list-group-item">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <span class="avatar" style="background-image: url('favicon.ico')"></span>
+                        </div>
+                        <div class="col text-truncate">
+                            <a href="#" target="_blank" class="text-reset d-block">@application.ReciprocatorName</a>
+                            <div class="d-block text-muted text-truncate mt-n1">@application.Note</div>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-green" @onclick="(() => AddMember(application))">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path>
+                                </svg>
+                                Add Member
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <button class="btn" @onclick="@(() => Dialog.Close())">Close Dialog</button>
+    </DialogActions>
+</Dialog>
+
+@code {
+
+    [Parameter]
+    public string ProposalId { get; set; }
+
+    private int _pageNumber = 1;
+    private int _totalPages;
+    private List<ReciprocatorDto> _applications = new();
+    
+    [CascadingParameter]
+    private DialogInstance Dialog { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadCandidates(_pageNumber);
+    }
+
+    private async Task LoadCandidates(int pageNumber)
+    {
+        var result = await ProposalService.GetAllCandidates(pageNumber, 10, string.Empty, ProposalId);
+        if (result.Succeeded)
+        {
+            _applications = result.Data;
+            _totalPages = result.TotalPages;
+        }
+        else
+        {
+            foreach (var message in result.Messages)
+            {
+                Toast.Add("Error", message, Severity.Error);
+            }
+        }
+    }
+
+    private async Task AddMember(ReciprocatorDto application)
+    {
+        var result = await ProjectService.AddMember(application.Id);
+        if (result.Succeeded)
+        {
+            _pageNumber = 1;
+            await LoadCandidates(_pageNumber);
+        }
+        else
+        {
+            foreach (var message in result.Messages)
+            {
+                Toast.Add("Error", message, Severity.Error);
+            }
+        }
+    }
+}
