@@ -159,7 +159,7 @@
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
-            
+            await LoadProject();
         }
     }
 
@@ -188,7 +188,19 @@
         };
         if (await DialogService.ShowMessageBox("Close Proposal", "Are you sure want to close the proposal now? You can still open another proposal after this.", "Yes", "No", options: options) == true)
         {
-                        
+            var result = await ProposalService.CloseProposal(Id.ToString());
+            if (result.Succeeded)
+            {
+                await LoadProject();
+            }
+            else
+            {
+                foreach (var message in result.Messages)
+                {
+                    Toast.Add("Error", message, Severity.Error);
+                }
+                NavigationManager.NavigateTo("Projects", false, true);
+            }
         }
     }
 }

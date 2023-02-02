@@ -315,6 +315,15 @@ public class ProposalService : IProposalService
         {
             var proposal = await _unitOfWork.GetRepository<Proposal>().Entities
                 .FirstOrDefaultAsync(x => x.ProjectId == projectId);
+            if (proposal == null)
+            {
+                throw new Exception("Specified Proposal does not exist!");
+            }
+
+            if (proposal.ProposerId != userId && proposal.Project.Members.All(x => x.MemberId != userId))
+            {
+                throw new Exception("You cannot close proposal for a Project that you won't belong");
+            }
             await _unitOfWork.GetRepository<Proposal>().DeleteAsync(proposal);
             await _unitOfWork.Commit();
             return await Result.SuccessAsync("Closed Proposal Successfully");
