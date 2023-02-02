@@ -65,6 +65,59 @@ public class ProjectService : IProjectService
         }
     }
 
+    public async Task<IResult<ProjectFullDto>> GetProjectFullInfo(string id, string userId)
+    {
+        try
+        {
+            var project = await _unitOfWork.GetRepository<Project>().Entities
+                .Include(x => x.Owner)
+                .Include(x => x.Members)
+                .ThenInclude(x => x.Member)
+                .Where(x => x.OwnerId == userId || x.Members.Any(y => y.MemberId == userId))
+                .Select(x => new ProjectFullDto()
+                {
+                    Id = x.Id,
+                    Title = x.Title,
+                    Description = x.Description,
+                    OwnerId = x.OwnerId,
+                    OwnerName = x.Owner.FullName,
+                    OwnerStatus = x.Owner.Status,
+                    OwnerCustomStatus = x.Owner.CustomStatus,
+                    Members = x.Members.Select(z => z.Member).Select(y => new ProjectMemberDto()
+                    {
+                        Id = y.Id,
+                        UserName = y.UserName,
+                        FullName = y.FullName,
+                        Status = y.Status,
+                        CustomStatus = y.CustomStatus
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync(x => x.Id == id);
+            return await Result<ProjectFullDto>.SuccessAsync(project);
+        }
+        catch (Exception e)
+        {
+            return await Result<ProjectFullDto>.FailAsync(e.Message);
+        }
+    }
+
+    public async Task<IResult<List<(string, string)>>> GetAllProjectsList(string userId)
+    {
+        try
+        {
+            var projects = await _unitOfWork.GetRepository<Project>().Entities
+                .Include(x => x.Members)
+                .Where(x => x.OwnerId == userId || x.Members.Any(y => y.MemberId == userId))
+                .Select(x => new { x.Id, x.Title })
+                .ToListAsync();
+            return await Result<List<(string, string)>>.SuccessAsync(projects.Select(x => (x.Id, x.Title)).ToList());
+        }
+        catch (Exception e)
+        {
+            return await Result<List<(string, string)>>.FailAsync(e.Message);
+        }
+    }
+
     public async Task<IResult> CreateProject(CreateProjectRequestDto request, string userName, string userId)
     {
         try
