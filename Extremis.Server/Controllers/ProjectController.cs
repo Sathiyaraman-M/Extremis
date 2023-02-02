@@ -25,6 +25,20 @@ public class ProjectController : Controller
         return Ok(await _projectService.GetAllJoinedProjects(pageNumber, pageSize, userId));
     }
 
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetProjectFullInfo(string id)
+    {
+        var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
+        return Ok(await _projectService.GetProjectFullInfo(id, userId));
+    }
+
+    [HttpGet("list")]
+    public async Task<IActionResult> GetAllProjectsList()
+    {
+        var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
+        return Ok(await _projectService.GetAllProjectsList(userId));
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateProject(CreateProjectRequestDto request)
     {
