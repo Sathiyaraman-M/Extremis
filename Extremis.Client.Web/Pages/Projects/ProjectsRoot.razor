@@ -6,7 +6,12 @@
                 <h2 class="page-title">Projects</h2>
                 <div class="card-actions">
                     <div class="btn-list">
-                        <button class="btn btn-primary" @onclick="CreateProject">Create Project</button>
+                        <button class="btn btn-primary" @onclick="CreateProject">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path>
+                            </svg>
+                            Create Project
+                        </button>
                     </div>
                 </div>
             </div>
@@ -18,7 +23,7 @@
                         </a>
                         <a @onclick="(() => TogglePageMode(PageMode.JoinedProjects))" class="list-group-item list-group-item-action @(_currentMode == PageMode.JoinedProjects ? "active" : "")">
                             <span class="text-reset">Joined Projects</span>
-                        </a>    
+                        </a>
                     </div>
                 </div>
                 <div class="col-md-9">
