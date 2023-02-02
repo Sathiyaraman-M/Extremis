@@ -4,6 +4,11 @@
         <div class="card">
             <div class="card-header">
                 <h2 class="page-title">Projects</h2>
+                <div class="card-actions">
+                    <div class="btn-list">
+                        <button class="btn btn-primary" @onclick="CreateProject">Create Project</button>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-3">
@@ -43,4 +48,14 @@
     private PageMode _currentMode = PageMode.MyProjects;
 
     private void TogglePageMode(PageMode pageMode) => _currentMode = pageMode;
+
+    private async Task CreateProject()
+    {
+        var dialog = DialogService.Show<CreateProjectDialog>("Create New Project", new DialogOptions() { Position = DialogPosition.Centered });
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            
+        }
+    }
 }
