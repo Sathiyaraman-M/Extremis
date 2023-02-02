@@ -77,8 +77,21 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card-body">
-                            <span>List content goes here</span>
+                        <div class="card-header">
+                            <Pagination CurrentPage="_pageNumber" TotalPages="_totalPages" PageChanged="LoadReciprocators"/>
+                        </div>
+                        <div class="list-group list-group-flush list-group-hoverable">
+                            @foreach (var reciprocator in _reciprocators)
+                            {
+                                <div class="list-group-item">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <h3>@reciprocator.ReciprocatorName</h3>
+                                            <span class="text-muted">@reciprocator.Note</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -97,9 +110,13 @@
     [Parameter]
     public Guid Id { get; set; }
 
+    private int _pageNumber = 1;
+    private int _pageSize = 10;
+    private int _totalPages;
     private bool _loaded;
     private ProposalDto _proposal = new();
-    
+    private List<ReciprocatorDto> _reciprocators = new();
+
     protected override async Task OnInitializedAsync()
     {
         var proposalResult = await ProposalService.GetProposal(Id);
@@ -111,12 +128,30 @@
             {
                 NavigationManager.NavigateTo("Explore");
             }
+            await LoadReciprocators(_pageNumber);
             _loaded = true;
         }
         else
         {
             Toast.Add("Error", "Specified Proposal not found!", Severity.Error);
             NavigationManager.NavigateTo("Explore");
+        }
+    }
+
+    private async Task LoadReciprocators(int pageNumber)
+    {
+        var result = await ProposalService.GetAllCandidates(pageNumber, _pageSize, string.Empty, Id.ToString());
+        if (result.Succeeded)
+        {
+            _reciprocators = result.Data;
+            _totalPages = result.TotalPages;
+        }
+        else
+        {
+            foreach (var message in result.Messages)
+            {
+                Toast.Add("Error", message, Severity.Error);
+            }
         }
     }
 
