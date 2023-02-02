@@ -33,7 +33,7 @@ public class ProposalService
         return await _httpClient.GetFromJsonAsync<Result<ProposalDto>>($"api/proposals/{id}");
     }
     
-    public async Task<IResult> CreateProposal(CreateProposalRequestDto request)
+    public async Task<IResult> CreateProposal(InitiateProposalRequestDto request)
     {
         var response = await _httpClient.PostAsJsonAsync("api/proposals/create", request);
         return await response.ToResult();

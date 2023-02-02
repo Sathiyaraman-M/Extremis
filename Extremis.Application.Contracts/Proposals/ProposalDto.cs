@@ -11,8 +11,6 @@ public class ProposalDto
     
     public string Title { get; set; }
     public string Description { get; set; }
-    
-    public ProposalStatus Status { get; set; }
     public string Duration { get; set; }
     
     public bool Applied { get; set; }

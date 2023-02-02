@@ -12,20 +12,20 @@
                     <div class="card-actions">
                         <div class="btn-list align-items-center">
                             <a style="cursor: pointer" @onclick="@(() => NavigationManager.NavigateTo("/proposals", false, true))" class="mx-2">Go back to Your Proposals</a>
-                            @switch (_proposal.Status)
-                            {
-                                case ProposalStatus.Open:
-                                    <button class="btn">Close Proposal</button>
-                                    break;
-                                case ProposalStatus.Cancelled:
-                                    <button class="btn btn-secondary" disabled>Cancelled</button>
-                                    break;
-                                case ProposalStatus.Closed:
-                                    <button class="btn btn-secondary" disabled>Closed</button>
-                                    break;
-                                default:
-                                    throw new ArgumentOutOfRangeException();
-                            }
+                            @* @switch (_proposal.Status) *@
+                            @* { *@
+                            @*     case ProposalStatus.Open: *@
+                            @*         <button class="btn">Close Proposal</button> *@
+                            @*         break; *@
+                            @*     case ProposalStatus.Cancelled: *@
+                            @*         <button class="btn btn-secondary" disabled>Cancelled</button> *@
+                            @*         break; *@
+                            @*     case ProposalStatus.Closed: *@
+                            @*         <button class="btn btn-secondary" disabled>Closed</button> *@
+                            @*         break; *@
+                            @*     default: *@
+                            @*         throw new ArgumentOutOfRangeException(); *@
+                            @* } *@
                         </div>
                     </div>
                 </div>
@@ -46,25 +46,25 @@
                                     <div class="datagrid-title">Duration</div>
                                     <div class="datagrid-content">@_proposal.Duration</div>
                                 </div>
-                                <div class="datagrid-item">
-                                    <div class="datagrid-title">Status</div>
-                                    <div class="datagrid-content">
-                                        @switch (_proposal.Status)
-                                        {
-                                            case ProposalStatus.Open:
-                                                <span class="status status-green">Open</span>
-                                                break;
-                                            case ProposalStatus.Closed:
-                                                <span class="status status-yellow">Closed</span>
-                                                break;
-                                            case ProposalStatus.Cancelled:
-                                                <span class="status status-gray">Cancelled</span>
-                                                break;
-                                            default:
-                                                throw new ArgumentOutOfRangeException();
-                                        }
-                                    </div>
-                                </div>
+                                @* <div class="datagrid-item"> *@
+                                @*     <div class="datagrid-title">Status</div> *@
+                                @*     <div class="datagrid-content"> *@
+                                @*         @switch (_proposal.Status) *@
+                                @*         { *@
+                                @*             case ProposalStatus.Open: *@
+                                @*                 <span class="status status-green">Open</span> *@
+                                @*                 break; *@
+                                @*             case ProposalStatus.Closed: *@
+                                @*                 <span class="status status-yellow">Closed</span> *@
+                                @*                 break; *@
+                                @*             case ProposalStatus.Cancelled: *@
+                                @*                 <span class="status status-gray">Cancelled</span> *@
+                                @*                 break; *@
+                                @*             default: *@
+                                @*                 throw new ArgumentOutOfRangeException(); *@
+                                @*         } *@
+                                @*     </div> *@
+                                @* </div> *@
                                 <div class="datagrid-item">
                                     <div class="datagrid-title">Description</div>
                                     <div class="datagrid-content">@_proposal.Description</div>

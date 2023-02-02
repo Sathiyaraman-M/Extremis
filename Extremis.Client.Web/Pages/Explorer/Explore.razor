@@ -58,32 +58,32 @@
                                         <div class="col-auto">
                                             <div class="card-body">
                                                 <div class="d-flex align-items-center">
-                                                    <div class="btn-list">
-                                                        @switch (proposal.Status)
-                                                        {
-                                                            case ProposalStatus.Closed:
-                                                                <button class="btn btn-secondary" disabled>Closed</button>
-                                                                break;
-                                                            case ProposalStatus.Cancelled:
-                                                                <button class="btn btn-secondary" disabled>Cancelled</button>
-                                                                break;
-                                                            case ProposalStatus.Open:
-                                                                @if (proposal.Applied)
-                                                                {
-                                                                    <button class="btn btn-success disabled" disabled>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                                           <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path>
-                                                                        </svg>
-                                                                        Applied
-                                                                    </button>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <button class="btn btn-success" @onclick="(() => ApplyForProposal(proposal.Id, proposal.ProposerName))">Apply</button>
-                                                                }
-                                                                break;
-                                                        }
-                                                    </div>
+                                                    @* <div class="btn-list"> *@
+                                                    @*     @switch (proposal.Status) *@
+                                                    @*     { *@
+                                                    @*         case ProposalStatus.Closed: *@
+                                                    @*             <button class="btn btn-secondary" disabled>Closed</button> *@
+                                                    @*             break; *@
+                                                    @*         case ProposalStatus.Cancelled: *@
+                                                    @*             <button class="btn btn-secondary" disabled>Cancelled</button> *@
+                                                    @*             break; *@
+                                                    @*         case ProposalStatus.Open: *@
+                                                    @*             @if (proposal.Applied) *@
+                                                    @*             { *@
+                                                    @*                 <button class="btn btn-success disabled" disabled> *@
+                                                    @*                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"> *@
+                                                    @*                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path> *@
+                                                    @*                     </svg> *@
+                                                    @*                     Applied *@
+                                                    @*                 </button> *@
+                                                    @*             } *@
+                                                    @*             else *@
+                                                    @*             { *@
+                                                    @*                 <button class="btn btn-success" @onclick="(() => ApplyForProposal(proposal.Id, proposal.ProposerName))">Apply</button> *@
+                                                    @*             } *@
+                                                    @*             break; *@
+                                                    @*     } *@
+                                                    @* </div> *@
                                                 </div>
                                             </div>
                                         </div>
