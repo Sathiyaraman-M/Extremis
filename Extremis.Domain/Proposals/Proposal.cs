@@ -1,5 +1,5 @@
 ﻿using Extremis.Contracts;
-using Extremis.Servers;
+using Extremis.Projects;
 using Extremis.Users;
 
 namespace Extremis.Proposals;
@@ -10,6 +10,9 @@ public class Proposal : IAuditableEntity<string>
     
     public AppUser Proposer { get; set; }
     public string ProposerId { get; set; }
+    
+    public Project Project { get; set; }
+    public string ProjectId { get; set; }
     
     public string Title { get; set; }
     public string Description { get; set; }
