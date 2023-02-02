@@ -1,16 +1,18 @@
 ﻿@inherits LayoutComponentBase
-<DialogProvider />
-<ToastProvider />
+<DialogProvider/>
+<ToastProvider/>
 <div class="page">
     <div class="sticky-top">
-        <header class="navbar navbar-expand-md navbar-dark sticky-top d-print-none" style="z-index: 1000">
+        <header class="navbar navbar-expand-md navbar-light sticky-top d-print-none" style="z-index: 1000">
             <div class="container">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <a class="navbar-brand text-white" href="/">
-                    EXTREMIS
-                </a>
+                <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+                    <a href=".">
+                        <img src="./image/logo.png" height="2.25rem" alt="Extremis" class="navbar-brand-image ">
+                    </a>
+                </h1>
                 <div class="navbar-nav flex-row order-md-last">
                     <div class="d-none d-md-flex">
                         <a @onclick="@ToggleDarkMode" class="nav-link px-0" title="Toggle dark mode" data-bs-toggle="tooltip" data-bs-placement="bottom">
@@ -28,12 +30,12 @@
                             }
                         </a>
                         <div class="d-flex align-items-center">
-                            <LoginDisplay />
+                            <LoginDisplay/>
                         </div>
                     </div>
                 </div>
                 <div class="collapse navbar-collapse" id="navbar-menu">
-                    <NavMenu />
+                    <NavMenu/>
                 </div>
             </div>
         </header>
