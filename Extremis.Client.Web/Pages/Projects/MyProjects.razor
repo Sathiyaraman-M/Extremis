@@ -1,23 +1,63 @@
+@inject ProjectService ProjectService
+@using Extremis.Projects
 <div class="card-body">
+    <Pagination CurrentPage="_pageNumber" TotalPages="_totalPages" PageChanged="LoadProjects" />
     <div class="row row-cards">
-        <div class="col-md-3">
-            <button class="btn w-100 text-center btn-outline-dark">Extremis</button>
-        </div>
-        <div class="col-md-3">
-            <button class="btn w-100 text-center btn-outline-dark">Endurance</button>
-        </div>
-        <div class="col-md-3">
-            <button class="btn w-100 text-center btn-outline-dark">RedShift</button>
-        </div>
-        <div class="col-md-3">
-            <button class="btn w-100 text-center btn-outline-dark">Novel Infinite</button>
-        </div>
-        <div class="col-md-3">
-            <button class="btn w-100 text-center btn-outline-dark">Resurgence</button>
-        </div>
+        @foreach (var project in _projects)
+        {
+            <div class="col-md-3">
+                <a href="@($"project/{project.Id}")" class="btn w-100 text-center btn-outline-dark text-uppercase">@project.Title</a>
+            </div>
+        }
+        @* <div class="col-md-3"> *@
+        @*     <button class="btn w-100 text-center btn-outline-dark">Endurance</button> *@
+        @* </div> *@
+        @* <div class="col-md-3"> *@
+        @*     <button class="btn w-100 text-center btn-outline-dark">RedShift</button> *@
+        @* </div> *@
+        @* <div class="col-md-3"> *@
+        @*     <button class="btn w-100 text-center btn-outline-dark">Novel Infinite</button> *@
+        @* </div> *@
+        @* <div class="col-md-3"> *@
+        @*     <button class="btn w-100 text-center btn-outline-dark">Resurgence</button> *@
+        @* </div> *@
     </div>
 </div>
 
 @code {
+    private int _pageNumber = 1;
+    private int _pageSize = 10;
+    private int _totalPages;
+    private bool _loaded;
+    private List<ProjectDto> _projects = new();
+
+    public async Task Load()
+    {
+        await LoadProjects(_pageNumber);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Load();
+        _loaded = true;
+    }
+
+    private async Task LoadProjects(int pageNumber)
+    {
+        var result = await ProjectService.GetAllMyProposals(pageNumber, _pageSize);
+        if (result.Succeeded)
+        {
+            _projects = result.Data;
+            _totalPages = result.TotalPages;
+        }
+        else
+        {
+            foreach (var message in result.Messages)
+            {
+                Toast.Add("Error", message, Severity.Error);
+            }
+        }
+    }
+
     
 }
