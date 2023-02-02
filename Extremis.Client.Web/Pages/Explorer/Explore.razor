@@ -62,8 +62,10 @@
                                                         @switch (proposal.Status)
                                                         {
                                                             case ProposalStatus.Closed:
-                                                            case ProposalStatus.Accepted:
                                                                 <button class="btn btn-secondary" disabled>Closed</button>
+                                                                break;
+                                                            case ProposalStatus.Cancelled:
+                                                                <button class="btn btn-secondary" disabled>Cancelled</button>
                                                                 break;
                                                             case ProposalStatus.Open:
                                                                 <button class="btn btn-success">Apply</button>
