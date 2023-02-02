@@ -35,4 +35,9 @@ public class ProjectService
         var response = await _httpClient.PostAsJsonAsync("api/projects", request);
         return await response.ToResult();
     }
+
+    public async Task<IResult> AddMember(string applicationId)
+    {
+        return await _httpClient.GetFromJsonAsync<Result>($"api/projects/members/new?applicationId={applicationId}");
+    }
 }
