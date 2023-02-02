@@ -5,8 +5,46 @@
     <div class="row row-cards">
         @foreach (var project in _projects)
         {
-            <div class="col-md-3">
-                <a href="@($"project/{project.Id}")" class="btn w-100 text-center btn-outline-dark text-uppercase">@project.Title</a>
+            <div class="space-y">
+                <a href="@($"project/{project.Id}")" class="card">
+                    <div class="row g-0">
+                        <div class="col">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h3 class="mb-0">@project.Title</h3>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md">
+                                        <div class="mt-3 list-inline list-inline-dots mb-0 text-muted d-sm-block d-none">
+                                            <div class="list-inline-item">
+                                                Created by <b>@project.OwnerName</b>
+                                            </div>
+                                            <div class="list-inline-item">
+                                                @project.Description
+                                            </div>
+                                            <div class="list-inline-item">
+                                                <b>@(project.MembersCount + 1) Members</b>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3 list mb-0 text-muted d-sm-none d-block">
+                                            <div class="list-item">
+                                                Created by <b>@project.OwnerName</b>
+                                            </div>
+                                            <div class="list-item">
+                                                @project.Description
+                                            </div>
+                                            <div class="list-item">
+                                                <b>@(project.MembersCount + 1) Members</b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
             </div>
         }
     </div>
@@ -32,7 +70,7 @@
 
     private async Task LoadProjects(int pageNumber)
     {
-        var result = await ProjectService.GetAllJoinedProposals(pageNumber, _pageSize);
+        var result = await ProjectService.GetAllJoinedProjects(pageNumber, _pageSize);
         if (result.Succeeded)
         {
             _projects = result.Data;
