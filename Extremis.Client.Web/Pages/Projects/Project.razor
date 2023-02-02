@@ -1,6 +1,8 @@
 ﻿@page "/Project/{Id:guid}"
 @inject ProjectService ProjectService
+@inject ProposalService ProposalService
 @using Extremis.Projects
+@using Size = BlazorSlice.Dialog.Size
 <div class="page-body">
     <div class="container-xl">
         @if (_loaded)
@@ -13,15 +15,35 @@
                     </div>
                     <div class="card-actions">
                         <div class="btn-list">
-                            <button class="btn btn-primary" @onclick="InitiateProposal">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path><path d="M16 11h6m-3 -3v6"></path>
-                                </svg>
-                                Initiate Proposal
-                            </button>
+                            @if (!_isInitiated)
+                            {
+                                <button class="btn btn-primary" @onclick="InitiateProposal">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path><path d="M16 11h6m-3 -3v6"></path>
+                                    </svg>
+                                    Initiate Proposal
+                                </button>
+                            }
+                            else
+                            {
+                                <div class="btn-list">
+                                    <button class="btn btn-primary" @onclick="InvokeSelectCandidatesDialog">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrows-maximize" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M16 4l4 0l0 4"></path><path d="M14 10l6 -6"></path><path d="M8 20l-4 0l0 -4"></path><path d="M4 20l6 -6"></path><path d="M16 20l4 0l0 -4"></path><path d="M14 14l6 6"></path><path d="M8 4l-4 0l0 4"></path><path d="M4 4l6 6"></path>
+                                        </svg>
+                                        See Candidates
+                                    </button>
+                                    <button class="btn btn-danger" @onclick="CloseProposal">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M18 6l-12 12"></path><path d="M6 6l12 12"></path>
+                                        </svg>
+                                        Close Proposal
+                                    </button>
+                                </div>
+                            }
                             <button class="btn btn-green">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-trello" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path><path d="M7 7h3v10h-3z"></path><path d="M14 7h3v6h-3z"></path>
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path><path d="M7 7h3v10h-3z"></path><path d="M14 7h3v6h-3z"></path>
                                 </svg>
                                 Plan Board
                             </button>
@@ -31,8 +53,34 @@
                 </div>
                 <div class="row">
                     <div class="col-md-3">
-                        <div class="card-body">
-                            <span>Members</span>
+                        <div class="card">
+                            <div class="list-group list-group-flush">
+                                <div class="list-group-item">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <span class="avatar" style="background-image: url('favicon.ico')"></span>
+                                        </div>
+                                        <div class="col text-truncate">
+                                            <h4>@_project.OwnerName</h4>
+                                            <span class="text-muted">@_project.OwnerStatus.ToString()</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                @foreach (var member in _project.Members)
+                                {
+                                    <div class="list-group-item">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <span class="avatar" style="background-image: url('favicon.ico')"></span>
+                                            </div>
+                                            <div class="col text-truncate">
+                                                <h4>@member.UserName</h4>
+                                                <span class="text-muted">@member.Status.ToString()</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                </div>
                         </div>
                     </div>
                     <div class="col-md-9">
@@ -58,14 +106,33 @@
 
     private ProjectFullDto _project = new();
     private bool _loaded;
+    private bool _isInitiated;
 
     protected override async Task OnParametersSetAsync()
+    {
+        await LoadProject();
+    }
+
+    private async Task LoadProject()
     {
         var result = await ProjectService.GetProjectFullInfo(Id);
         if (result.Succeeded)
         {
             _project = result.Data;
-            _loaded = true;
+            var initiateResult = await ProposalService.IsProposalPresent(Id.ToString());
+            if (initiateResult.Succeeded)
+            {
+                _isInitiated = initiateResult.Data;
+                _loaded = true;
+            }
+            else
+            {
+                foreach (var message in result.Messages)
+                {
+                    Toast.Add("Error", message, Severity.Error);
+                }
+                NavigationManager.NavigateTo("Projects", false, true);
+            }
         }
         else
         {
@@ -93,6 +160,35 @@
         if (!result.Cancelled)
         {
             
+        }
+    }
+
+    private async Task InvokeSelectCandidatesDialog()
+    {
+        var dialogParameters = new DialogParameters();
+        var options = new DialogOptions()
+        {
+            Position = DialogPosition.Centered,
+            Size = Size.Large,
+            Scrollable = true
+        };
+        var dialog = DialogService.Show<SelectCandidatesDialog>("Select Candidates", dialogParameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            await LoadProject();
+        }
+    }
+
+    private async Task CloseProposal()
+    {
+        var options = new DialogOptions()
+        {
+            Position = DialogPosition.Centered
+        };
+        if (await DialogService.ShowMessageBox("Close Proposal", "Are you sure want to close the proposal now? You can still open another proposal after this.", "Yes", "No", options: options) == true)
+        {
+                        
         }
     }
 }
