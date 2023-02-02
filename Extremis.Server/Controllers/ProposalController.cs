@@ -47,6 +47,13 @@ public class ProposalController : ControllerBase
         var userName = HttpContext.User.FindFirstValue(JwtClaimTypes.PreferredUserName);
         return Ok(await _proposalService.ApplyForProposal(request, userName, userId));
     }
+
+    [HttpGet("apply-check")]
+    public async Task<IActionResult> CheckAppliedStatus(string id)
+    {
+        var userId = HttpContext.User.FindFirstValue(JwtClaimTypes.Subject);
+        return Ok(await _proposalService.CheckApplyStatusProposal(id, userId));
+    }
     
     [HttpGet("candidates")]
     public async Task<IActionResult> GetAllCandidates(int pageNumber, int pageSize, string searchString,

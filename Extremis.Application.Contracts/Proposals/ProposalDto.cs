@@ -12,6 +12,8 @@ public class ProposalDto
     public ProposalStatus Status { get; set; }
     public string Duration { get; set; }
     
+    public bool Applied { get; set; }
+    
     public DateTime CreatedOn { get; set; }
     public DateTime? LastModifiedOn { get; set; }
     public DateTime ExpireTime { get; set; }

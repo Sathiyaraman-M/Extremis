@@ -44,6 +44,11 @@ public class ProposalService
         var response = await _httpClient.PostAsJsonAsync("api/proposals/apply", request);
         return await response.ToResult();
     }
+    
+    public async Task<IResult<bool>> CheckAppliedStatus(string id)
+    {
+        return await _httpClient.GetFromJsonAsync<Result<bool>>($"api/proposals/apply-check?id={id}");
+    }
 
     public async Task<PaginatedResult<ReciprocatorDto>> GetAllCandidates(int pageNumber, int pageSize, string searchString, string id)
     {

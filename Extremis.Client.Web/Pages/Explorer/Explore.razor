@@ -68,7 +68,19 @@
                                                                 <button class="btn btn-secondary" disabled>Cancelled</button>
                                                                 break;
                                                             case ProposalStatus.Open:
-                                                                <button class="btn btn-success" @onclick="(() => ApplyForProposal(proposal.Id, proposal.ProposerName))">Apply</button>
+                                                                @if (proposal.Applied)
+                                                                {
+                                                                    <button class="btn btn-success disabled" disabled>
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                                           <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path>
+                                                                        </svg>
+                                                                        Applied
+                                                                    </button>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <button class="btn btn-success" @onclick="(() => ApplyForProposal(proposal.Id, proposal.ProposerName))">Apply</button>
+                                                                }
                                                                 break;
                                                         }
                                                     </div>
@@ -114,6 +126,10 @@
         {
             _proposals = result.Data;
             _totalPages = result.TotalPages;
+            foreach (var proposal in _proposals)
+            {
+                proposal.Applied = (await ProposalService.CheckAppliedStatus(proposal.Id)).Data;
+            }
         }
         else
         {
@@ -134,7 +150,7 @@
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
-            
+            NavigationManager.NavigateTo("/proposals");
         }
     }
 
@@ -151,5 +167,9 @@
         };
         var dialog = DialogService.Show<ApplyForProposalDialog>("Apply for Proposal", dialogParameters, dialogOptions);
         var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            await LoadProposals(_pageNumber);
+        }
     }
 }

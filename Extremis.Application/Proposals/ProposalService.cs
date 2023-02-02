@@ -63,7 +63,7 @@ public class ProposalService : IProposalService
                 ProposerId = proposal.ProposerId,
                 ProposerName = proposal.Proposer.FullName,
                 Status = proposal.Status,
-                Title = proposal.Title
+                Title = proposal.Title,
             };
             return await _unitOfWork.GetRepository<Proposal>().Entities
                 .Include(x => x.Proposer)
@@ -160,6 +160,20 @@ public class ProposalService : IProposalService
         catch (Exception e)
         {
             return await Result.FailAsync(e.Message);
+        }
+    }
+
+    public async Task<IResult<bool>> CheckApplyStatusProposal(string id, string userId)
+    {
+        try
+        {
+            var application = await _unitOfWork.GetRepository<Reciprocation>()
+                .Entities.FirstOrDefaultAsync(x => x.ProposalId == id && x.ReciprocatorId == userId);
+            return await Result<bool>.SuccessAsync(application != null);
+        }
+        catch (Exception e)
+        {
+            return await Result<bool>.FailAsync(e.Message);
         }
     }
 
