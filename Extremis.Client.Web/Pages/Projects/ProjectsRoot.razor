@@ -16,15 +16,17 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row g-0" style="height:80vh!important;">
                 <div class="col-md-3">
-                    <div class="list-group list-group-flush">
-                        <a @onclick="(() => TogglePageMode(PageMode.MyProjects))" class="list-group-item list-group-item-action @(_currentMode == PageMode.MyProjects ? "active" : "")">
-                            <span class="text-reset">My Projects</span>
-                        </a>
-                        <a @onclick="(() => TogglePageMode(PageMode.JoinedProjects))" class="list-group-item list-group-item-action @(_currentMode == PageMode.JoinedProjects ? "active" : "")">
-                            <span class="text-reset">Joined Projects</span>
-                        </a>
+                    <div class="border-end h-100">
+                        <div class="list-group list-group-flush">
+                            <a @onclick="(() => TogglePageMode(PageMode.MyProjects))" class="list-group-item list-group-item-action @(_currentMode == PageMode.MyProjects ? "active" : "")">
+                                <span class="text-reset">My Projects</span>
+                            </a>
+                            <a @onclick="(() => TogglePageMode(PageMode.JoinedProjects))" class="list-group-item list-group-item-action @(_currentMode == PageMode.JoinedProjects ? "active" : "")">
+                                <span class="text-reset">Joined Projects</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-9">
