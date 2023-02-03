@@ -1,54 +1,74 @@
 @inject ProjectService ProjectService
 @using Extremis.Projects
-<div class="card-body">
-    <Pagination CurrentPage="_pageNumber" TotalPages="_totalPages" PageChanged="LoadProjects" />
-    <div class="row row-cards">
-        @foreach (var project in _projects)
-        {
-            <div class="space-y">
-                <a href="@($"project/{project.Id}")" class="card">
-                    <div class="row g-0">
-                        <div class="col">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col">
-                                        <h3 class="mb-0">@project.Title</h3>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md">
-                                        <div class="mt-3 list-inline list-inline-dots mb-0 text-muted d-sm-block d-none">
-                                            <div class="list-inline-item">
-                                                Created by <b>@project.OwnerName</b>
-                                            </div>
-                                            <div class="list-inline-item">
-                                                @project.Description
-                                            </div>
-                                            <div class="list-inline-item">
-                                                <b>@(project.MembersCount + 1) Members</b>
-                                            </div>
+@if (_projects.Count != 0)
+{
+    <div class="card-body">
+        <Pagination CurrentPage="_pageNumber" TotalPages="_totalPages" PageChanged="LoadProjects"/>
+        <div class="row row-cards">
+            @foreach (var project in _projects)
+            {
+                <div class="space-y">
+                    <a href="@($"project/{project.Id}")" class="card">
+                        <div class="row g-0">
+                            <div class="col">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h3 class="mb-0">@project.Title</h3>
                                         </div>
-                                        <div class="mt-3 list mb-0 text-muted d-sm-none d-block">
-                                            <div class="list-item">
-                                                Created by <b>@project.OwnerName</b>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md">
+                                            <div class="mt-3 list-inline list-inline-dots mb-0 text-muted d-sm-block d-none">
+                                                <div class="list-inline-item">
+                                                    Created by <b>@project.OwnerName</b>
+                                                </div>
+                                                <div class="list-inline-item">
+                                                    @project.Description
+                                                </div>
+                                                <div class="list-inline-item">
+                                                    <b>@(project.MembersCount + 1) Members</b>
+                                                </div>
                                             </div>
-                                            <div class="list-item">
-                                                @project.Description
-                                            </div>
-                                            <div class="list-item">
-                                                <b>@(project.MembersCount + 1) Members</b>
+                                            <div class="mt-3 list mb-0 text-muted d-sm-none d-block">
+                                                <div class="list-item">
+                                                    Created by <b>@project.OwnerName</b>
+                                                </div>
+                                                <div class="list-item">
+                                                    @project.Description
+                                                </div>
+                                                <div class="list-item">
+                                                    <b>@(project.MembersCount + 1) Members</b>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </a>
-            </div>
-        }
+                    </a>
+                </div>
+            }
+        </div>
     </div>
-</div>
+}
+else
+{
+    <div class="empty">
+        <p class="empty-title">No projects found</p>
+        <p class="empty-subtitle text-muted">
+            Join a project and start collaborating with projects.
+        </p>
+        <div class="empty-action">
+            <a class="btn btn-primary" href="/explore">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path><path d="M21 21l-6 -6"></path>
+                </svg>
+                Go to Explore
+            </a>
+        </div>
+    </div>
+}
 
 @code {
     private int _pageNumber = 1;

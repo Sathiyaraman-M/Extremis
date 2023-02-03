@@ -23,49 +23,83 @@
                 </div>
                 @if (_loaded)
                 {
-                    <div class="text-center">
-                        <Pagination CurrentPage="_pageNumber" TotalPages="_totalPages" PageChanged="LoadProposals" />
-                    </div>
-                    <div class="row row-cards">
-                        <div class="space-y">
-                            @foreach (var proposal in _proposals)
-                            {
-                                <div class="card">
-                                    <div class="row g-0">
-                                        <div class="col">
-                                            <div class="card-body">
-                                                <h3>@proposal.Title</h3>
-                                                <span>@proposal.Description</span>
+                    @if (_proposals.Count != 0 && _totalPages != 0)
+                    {
+                        <div class="text-center">
+                            <Pagination CurrentPage="_pageNumber" TotalPages="_totalPages" PageChanged="LoadProposals"/>
+                        </div>
+                        <div class="row row-cards">
+                            <div class="space-y">
+                                @foreach (var proposal in _proposals)
+                                {
+                                    <div class="card">
+                                        <div class="row g-0">
+                                            <div class="col">
+                                                <div class="card-body">
+                                                    <h3>@proposal.Title</h3>
+                                                    <span>@proposal.Description</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <div class="card-body">
-                                                <div class="d-flex align-items-center">
-                                                    @if (proposal.Applied)
-                                                    {
-                                                        <button class="btn btn-success disabled" disabled>
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path>
-                                                            </svg>
-                                                            Applied
-                                                        </button>
-                                                    }
-                                                    else if(proposal.NA == false)
-                                                    {
-                                                        <button class="btn btn-success" @onclick="(() => ApplyForProposal(proposal.Id, proposal.ProposerName))">Apply</button>
-                                                    }
-                                                    else
-                                                    {
-                                                        <button class="btn btn-secondary disabled">Not Available</button>
-                                                    }
+                                            <div class="col-auto">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center">
+                                                        @if (proposal.Applied)
+                                                        {
+                                                            <button class="btn btn-success disabled" disabled>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 12l5 5l10 -10"></path>
+                                                                </svg>
+                                                                Applied
+                                                            </button>
+                                                        }
+                                                        else if (proposal.NA == false)
+                                                        {
+                                                            <button class="btn btn-success" @onclick="(() => ApplyForProposal(proposal.Id, proposal.ProposerName))">Apply</button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button class="btn btn-secondary disabled">Not Available</button>
+                                                        }
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            }
+                                }
+                            </div>
                         </div>
-                    </div>
+                    }
+                    else
+                    {
+                        <div class="card">
+                            <div class="empty">
+                                <div class="empty-img">
+                                    <img src="./image/empty.svg" height="128" alt=""/>
+                                </div>
+                                @if (!string.IsNullOrEmpty(_searchString))
+                                {
+                                    <p class="empty-title">No results found</p>
+                                    <p class="empty-subtitle text-muted">
+                                        Try adjusting your search or filter to find what you're looking for.
+                                    </p>
+                                    <div class="empty-action">
+                                        <a href="./." class="btn btn-primary">
+                                            <!-- Download SVG icon from http://tabler-icons.io/i/search -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/><path d="M21 21l-6 -6"/></svg>
+                                            Search again
+                                        </a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <p class="empty-title">No suggestions found</p>
+                                    <p class="empty-subtitle text-muted">
+                                        Try searching some projects to work.
+                                    </p>
+                                }
+                            </div>
+                        </div>
+                    }
                 }
                 else
                 {

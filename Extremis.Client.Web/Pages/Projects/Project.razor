@@ -3,6 +3,7 @@
 @inject ProposalService ProposalService
 @using Extremis.Projects
 @using Size = BlazorSlice.Dialog.Size
+@using Extremis.Client.Pages.Projects.Components
 <div class="page-body">
     <div class="container-xl">
         @if (_loaded)
@@ -61,10 +62,10 @@
                     </div>
 
                 </div>
-                <div class="row">
+                <div class="row g-0" style="height: 80vh!important;">
                     <div class="col-md-3">
-                        <div class="card">
-                            <div class="list-group list-group-flush">
+                        <div class="border-end h-100">
+                            <div class="list-group list-group-flush overflow-auto">
                                 <div class="list-group-item">
                                     <div class="row align-items-center">
                                         <div class="col-auto">
@@ -94,9 +95,7 @@
                         </div>
                     </div>
                     <div class="col-md-9">
-                        <div class="card-body">
-                            <span>Chat, Task list</span>
-                        </div>
+                        <ProjectChat ProjectId="Id" />
                     </div>
                 </div>
             </div>
@@ -118,6 +117,7 @@
     private ProjectFullDto _project = new();
     private bool _loaded;
     private bool _isInitiated;
+    private string Message { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
