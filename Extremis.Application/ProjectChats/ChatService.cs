@@ -1,4 +1,5 @@
-﻿using Extremis.Repositories;
+﻿using Extremis.Projects;
+using Extremis.Repositories;
 using Extremis.Wrapper;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,11 @@ public class ChatService : IChatService
     private readonly IUnitOfWork _unitOfWork;
 
     public ChatService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
+
+    public Task<IResult<List<ProjectMemberDto>>> GetProjectMembers(string projectId)
+    {
+        throw new NotImplementedException();
+    }
 
     public async Task<IResult> SaveChatMessageAsync(string fromId, SendMessageDto request)
     {

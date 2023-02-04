@@ -1,4 +1,5 @@
 ﻿using Extremis.DbContexts;
+using Extremis.Hubs;
 using Extremis.Middlewares;
 using Extremis.Users;
 using Microsoft.AspNetCore.Identity;
@@ -29,6 +30,7 @@ public static class HostingExtensions
         builder.Services.AddRazorPages();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddSignalR();
         return builder.Build();
     }
 
@@ -67,6 +69,7 @@ public static class HostingExtensions
 
         app.MapRazorPages();
         app.MapControllers();
+        app.MapHub<ProjectChatHub>("/projectChatHub");
         app.MapFallbackToFile("index.html");
 
         app.UseSwagger();

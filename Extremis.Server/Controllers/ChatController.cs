@@ -11,6 +11,12 @@ public class ChatController : ControllerBase
 
     public ChatController(IChatService chatService) => _chatService = chatService;
 
+    [HttpGet("members")]
+    public async Task<IActionResult> GetProjectMembers(string projectId)
+    {
+        return Ok(await _chatService.GetProjectMembers(projectId));
+    }
+
     [HttpPost("save")]
     public async Task<IActionResult> SaveMessage(SendMessageDto request)
     {
