@@ -1,4 +1,5 @@
-﻿using Extremis.Projects;
+﻿using Extremis.ProjectChats;
+using Extremis.Projects;
 using Extremis.Proposals;
 using Extremis.Users;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IProposalService, ProposalService>();
         services.AddScoped<IProjectService, ProjectService>();
+        services.AddScoped<IChatService, ChatService>();
         return services;
     }
 }

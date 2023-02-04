@@ -25,8 +25,6 @@ public static class HostingExtensions
         builder.Services.AddAuthorization();
         builder.Services.AddApplicationServices();
         builder.Services.AddInternalServices();
-        builder.Services.AddAuthentication();
-        builder.Services.AddAuthorization();
         builder.Services.AddControllersWithViews();
         builder.Services.AddRazorPages();
         builder.Services.AddEndpointsApiExplorer();

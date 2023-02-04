@@ -1,4 +1,5 @@
 ﻿using Duende.IdentityServer.EntityFramework.Options;
+using Extremis.ProjectChats;
 using Extremis.Projects;
 using Extremis.Proposals;
 using Extremis.Users;
@@ -68,5 +69,18 @@ public class AppDbContext: ApiAuthorizationDbContext<AppUser>
             .ToTable("Reciprocations")
             .Property(x => x.Id)
             .ValueGeneratedOnAdd();
+
+        builder.Entity<ChatMessage>(entity =>
+        {
+            entity.HasOne(x => x.FromUser)
+                .WithMany(x => x.ChatMessagesFromUsers)
+                .HasForeignKey(x => x.FromUserId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+            
+            entity.HasOne(x => x.ToUser)
+                .WithMany(x => x.ChatMessagesToUsers)
+                .HasForeignKey(x => x.ToUserId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+        });
     }
 }
