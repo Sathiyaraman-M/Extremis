@@ -6,8 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extremis.Shared", "Extremis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extremis.Domain", "Extremis.Domain\Extremis.Domain.csproj", "{A579CCAE-5CFE-4C0F-8353-EEB355489937}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extremis.DbMigrator", "Extremis.DbMigrator\Extremis.DbMigrator.csproj", "{D6D90C6E-BC6C-4808-BF0A-473E0320E4CE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extremis.Application.Contracts", "Extremis.Application.Contracts\Extremis.Application.Contracts.csproj", "{77533765-8046-4C1C-98D3-192E8272E776}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extremis.Application", "Extremis.Application\Extremis.Application.csproj", "{293CCE33-D252-45D3-BDB0-7F6F9830FE88}"
@@ -34,10 +32,6 @@ Global
 		{A579CCAE-5CFE-4C0F-8353-EEB355489937}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A579CCAE-5CFE-4C0F-8353-EEB355489937}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A579CCAE-5CFE-4C0F-8353-EEB355489937}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D6D90C6E-BC6C-4808-BF0A-473E0320E4CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D6D90C6E-BC6C-4808-BF0A-473E0320E4CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D6D90C6E-BC6C-4808-BF0A-473E0320E4CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D6D90C6E-BC6C-4808-BF0A-473E0320E4CE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{77533765-8046-4C1C-98D3-192E8272E776}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{77533765-8046-4C1C-98D3-192E8272E776}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77533765-8046-4C1C-98D3-192E8272E776}.Release|Any CPU.ActiveCfg = Release|Any CPU
