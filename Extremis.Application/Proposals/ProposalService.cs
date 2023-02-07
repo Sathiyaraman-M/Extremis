@@ -166,7 +166,7 @@ public class ProposalService : IProposalService
             }
             var project = await _unitOfWork.GetRepository<Project>().Entities
                 .Include(x => x.Members)
-                .FirstOrDefaultAsync(x => proposal.ProjectId == userId);
+                .FirstOrDefaultAsync(x => proposal.ProjectId == x.Id);
             if (project == null)
             {
                 throw new Exception("Project Not Found!");
