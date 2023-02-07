@@ -1,42 +1,47 @@
-﻿<div class="d-flex flex-column justify-end h-100">
-    <div class="card-body d-flex flex-column h-100" style="overflow-y: scroll">
-        <div class="row">
-            <div class="col-auto">
-                <img src="https://via.placeholder.com/50x50" alt="User profile picture" width="50" height="50" class="rounded-circle" />
-            </div>
-            <div class="col">
-                <div class="d-flex flex-column w-100 p-3 mb-2 border rounded">
-                    <div class="d-flex justify-content-between">
-                        <h5>Bruce Wayne</h5>
-                        <small class="ms-2">12.34 PM</small>
+﻿@using Microsoft.AspNetCore.SignalR.Client
+@using Extremis.Projects
+@using System.ComponentModel.Design
+@using Extremis.ProjectChats
+@inject ChatService ChatService
+<div class="d-flex flex-column justify-end" style="overflow-y: scroll">
+    <div class="border-bottom">
+        <div class="card-body">
+            <h2>@ContactDto?.UserName</h2>
+        </div>
+    </div>
+    <div class="card-body d-flex flex-column" style="overflow-y: scroll">
+        @foreach (var messageDto in Conversations)
+        {
+            <div class="row">
+                <div class="col-auto">
+                    <img src="https://via.placeholder.com/50x50" alt="User profile picture" width="50" height="50" class="rounded-circle"/>
+                </div>
+                <div class="col">
+                    <div class="d-flex flex-column w-100 p-3 mb-2 border rounded">
+                        <div class="d-flex justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <h5>@messageDto.FromUserName</h5>
+                                @if (messageDto.FromUserId == _userId)
+                                {
+                                    <span class="status status-blue">You</span>
+                                }
+                            </div>
+                            <small class="ms-2">@messageDto.CreateDateTime.ToShortTimeString()</small>
+                        </div>
+                        <p class="mb-0">@messageDto.Message</p>
                     </div>
-                    <p class="mb-0">This is the message to displayed here!</p>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-auto">
-                <img src="https://via.placeholder.com/50x50" alt="User profile picture" width="50" height="50" class="rounded-circle" />
-            </div>
-            <div class="col">
-                <div class="d-flex flex-column w-100 p-3 mb-2 border rounded">
-                    <div class="d-flex justify-content-between">
-                        <h5>Bruce Wayne</h5>
-                        <small class="ms-2">12.34 PM</small>
-                    </div>
-                    <p class="mb-0">This is the message to displayed here!</p>
-                </div>
-            </div>
-        </div>
+        }
     </div>
     <div class="border-top mb-0 mt-auto">
         <div class="card-body">
             <div class="row">
                 <div class="col">
-                    <InputText class="form-control" @bind-Value="Message"/>
+                    <InputText class="form-control" @bind-Value="CurrentMessage"/>
                 </div>
                 <div class="col-auto">
-                    <button class="btn btn-icon">
+                    <button class="btn btn-icon" @onclick="SubmitAsync">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M10 14l11 -11"></path><path d="M21 3l-6.5 18a0.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a0.55 .55 0 0 1 0 -1l18 -6.5"></path>
                         </svg>
@@ -51,5 +56,109 @@
     [Parameter]
     public string ProjectId { get; set; }
     
-    public string Message { get; set; }
+    [CascadingParameter]
+    private HubConnection HubConnection { get;set; }
+    
+    [Parameter]
+    public ProjectMemberDto ContactDto { get; set; }
+
+    private string CurrentMessage { get; set; }
+
+    private string _userId;
+    private string _userName;
+    private List<MessageDto> Conversations { get; set; } = new();
+
+    private async Task LoadConversations()
+    {
+        var result = await ChatService.GetConversation(ContactDto.Id, ProjectId);
+        if (result.Succeeded)
+        {
+            Conversations = result.Data;
+        }
+        else
+        {
+            foreach (var message in result.Messages)
+            {
+                Toast.Add("Error", message, Severity.Error);
+            }
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        _userId = user.FindFirstValue(JwtClaimTypes.Subject);
+        _userName = user.FindFirstValue(JwtClaimTypes.PreferredUserName);
+        await LoadConversations();
+        if (HubConnection == null)
+        {
+            HubConnection = new HubConnectionBuilder().WithUrl(NavigationManager.ToAbsoluteUri("/projectChatHub")).Build();
+        }
+        if (HubConnection.State == HubConnectionState.Disconnected)
+        {
+            await HubConnection.StartAsync();
+        }
+        HubConnection.On<MessageDto, string>("ReceiveMessage", (async (messageDto, userName) =>
+        {
+            if (((ContactDto.Id == messageDto.ToUserId && _userId == messageDto.FromUserId) || (ContactDto.Id == messageDto.FromUserId && _userId == messageDto.ToUserId)) && ProjectId == messageDto.ProjectId)
+            {
+                if ((ContactDto.Id == messageDto.ToUserId && _userId == messageDto.FromUserId))
+                {
+                    Conversations.Add(new MessageDto()
+                    {
+                        Message = messageDto.Message,
+                        ProjectId = ProjectId,
+                        CreateDateTime = messageDto.CreateDateTime,
+                        FromUserId = _userId,
+                        FromUserName = messageDto.FromUserName,
+                        ToUserId = ContactDto.Id,
+                        ToUserName = ContactDto.UserName
+                    });
+                    await HubConnection.SendAsync("ChatNotificationAsync", messageDto.Message, ContactDto.Id, _userId, ProjectId);
+                }
+                else if (ContactDto.Id == messageDto.FromUserId && _userId == messageDto.ToUserId)
+                {
+                    Conversations.Add(new MessageDto()
+                    {
+                        Message = messageDto.Message,
+                        ProjectId = ProjectId,
+                        CreateDateTime = messageDto.CreateDateTime,
+                        FromUserId = ContactDto.Id,
+                        FromUserName = ContactDto.UserName,
+                        ToUserId = _userId,
+                        ToUserName = messageDto.FromUserName
+                    });
+                }
+                StateHasChanged();
+            }
+        }));
+    }
+
+    private async Task SubmitAsync()
+    {
+        if (!string.IsNullOrEmpty(CurrentMessage))
+        {
+            var sendMessageDto = new SendMessageDto()
+            {
+                ToUserId = ContactDto.Id,
+                Message = CurrentMessage,
+                ProjectId = ProjectId
+            };
+            await ChatService.SaveMessageAsync(sendMessageDto);
+            var messageDto = new MessageDto()
+            {
+                CreateDateTime = DateTime.Now,
+                ProjectId = ProjectId,
+                FromUserId = _userId,
+                FromUserName = _userName,
+                ToUserId = sendMessageDto.ToUserId,
+                Message = sendMessageDto.Message,
+                ToUserName = ContactDto.UserName
+            };
+            await HubConnection.SendAsync("SendMessage", messageDto, ContactDto.Id);
+            Conversations.Add(messageDto);
+            CurrentMessage = string.Empty;
+            //await LoadConversations();
+        }
+    }
 }

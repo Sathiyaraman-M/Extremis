@@ -60,26 +60,14 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
-                <div class="row g-0" style="height: 80vh!important;">
-                    <div class="col-md-3">
-                        <div class="border-end h-100">
-                            <div class="list-group list-group-flush overflow-auto">
-                                <div class="list-group-item">
-                                    <div class="row align-items-center">
-                                        <div class="col-auto">
-                                            <span class="avatar" style="background-image: url('favicon.ico')"></span>
-                                        </div>
-                                        <div class="col text-truncate">
-                                            <h4>@_project.OwnerName</h4>
-                                            <span class="text-muted">@_project.OwnerStatus.ToString()</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                @foreach (var member in _project.Members)
+                <div class="row g-0" style="height: 80vh!important; overflow-y: hidden">
+                    <div class="col-md-3" style="overflow-y: scroll">
+                        <div class="border-end">
+                            <div class="list-group list-group-flush" style="overflow-y: scroll; max-height: 12rem">
+                                @foreach (var member in _project.Members.Where(member => member.Id != _userId))
                                 {
-                                    <div class="list-group-item">
+                                    <a class="list-group-item" @onclick="@((() => SelectedMember = member))">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
                                                 <span class="avatar" style="background-image: url('favicon.ico')"></span>
@@ -89,13 +77,13 @@
                                                 <span class="text-muted">@member.Status.ToString()</span>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 }
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-9">
-                        <ProjectChat ProjectId="Id" />
+                    <div class="col-md-9" style="overflow-y: scroll">
+                        <ProjectChat ProjectId="@Id.ToString()" ContactDto="@SelectedMember" />
                     </div>
                 </div>
             </div>
@@ -117,10 +105,12 @@
     private ProjectFullDto _project = new();
     private bool _loaded;
     private bool _isInitiated;
-    private string Message { get; set; }
+    private ProjectMemberDto SelectedMember { get; set; }
+    private string _userId;
 
     protected override async Task OnParametersSetAsync()
     {
+        _userId = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User.FindFirstValue(JwtClaimTypes.Subject);
         await LoadProject();
     }
 
@@ -130,6 +120,15 @@
         if (result.Succeeded)
         {
             _project = result.Data;
+            _project.Members.Add(new ProjectMemberDto()
+            {
+                Id = _project.OwnerId,
+                CustomStatus = _project.OwnerCustomStatus,
+                FullName = _project.OwnerName,
+                Status = _project.OwnerStatus,
+                UserName = _project.OwnerName
+            });
+            SelectedMember = _project.Members.FirstOrDefault(x => x.Id != _userId);
             var initiateResult = await ProposalService.IsProposalPresent(Id.ToString());
             if (initiateResult.Succeeded)
             {

@@ -12,6 +12,6 @@ public class ProjectChatHub : Hub
     
     public async Task ChatNotificationAsync(string message, string receiverUserId, string senderUserId, string projectId)
     {
-        await Clients.All.SendAsync("ReceiveChatNotification", message, receiverUserId, senderUserId);
+        await Clients.All.SendAsync("ReceiveChatNotification", message, receiverUserId, senderUserId, projectId);
     }
 }   
