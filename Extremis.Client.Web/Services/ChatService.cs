@@ -19,7 +19,7 @@ public class ChatService
 
     public async Task<IResult> SaveMessageAsync(SendMessageDto request)
     {
-        var response = await _httpClient.PostAsJsonAsync("api/project-chat/saved6t7", request);
+        var response = await _httpClient.PostAsJsonAsync("api/project-chat/save", request);
         return await response.ToResult();
     }
 
