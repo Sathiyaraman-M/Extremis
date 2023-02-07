@@ -6,6 +6,7 @@ public static class ServiceRegistrations
 {
     public static IServiceCollection AddClientServices(this IServiceCollection services)
     {
+        services.AddTransient<ChatService>();
         services.AddTransient<ProjectService>();
         services.AddTransient<ProposalService>();
         services.AddTransient<UserService>();
