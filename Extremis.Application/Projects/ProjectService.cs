@@ -82,7 +82,8 @@ public class ProjectService : IProjectService
                     Title = x.Title,
                     Description = x.Description,
                     OwnerId = x.OwnerId,
-                    OwnerName = x.Owner.FullName,
+                    OwnerName = x.Owner.UserName,
+                    OwnerFullName = x.Owner.FullName,
                     OwnerStatus = x.Owner.Status,
                     OwnerCustomStatus = x.Owner.CustomStatus,
                     Members = x.Members.Select(z => z.Member).Select(y => new ProjectMemberDto()

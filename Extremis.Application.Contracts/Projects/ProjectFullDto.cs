@@ -9,6 +9,7 @@ public class ProjectFullDto
     public string Description { get; set; }
     public string OwnerId { get; set; }
     public string OwnerName { get; set; }
+    public string OwnerFullName { get; set; }
     
     public UserStatus OwnerStatus { get; set; }
     
