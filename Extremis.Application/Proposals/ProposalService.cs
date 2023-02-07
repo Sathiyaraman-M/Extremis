@@ -171,8 +171,7 @@ public class ProposalService : IProposalService
             {
                 throw new Exception("Project Not Found!");
             }
-            return await Result<bool>.SuccessAsync(project.Members.All(x => x.MemberId != userId));
-            
+            return await Result<bool>.SuccessAsync(project.Members.Any(x => x.MemberId == userId));
         }
         catch (Exception e)
         {
