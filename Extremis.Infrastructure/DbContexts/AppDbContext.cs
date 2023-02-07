@@ -72,6 +72,10 @@ public class AppDbContext: ApiAuthorizationDbContext<AppUser>
 
         builder.Entity<ChatMessage>(entity =>
         {
+            entity.ToTable("ChatMesages")
+                .Property(x => x.Id)
+                .ValueGeneratedOnAdd();
+            
             entity.HasOne(x => x.FromUser)
                 .WithMany(x => x.ChatMessagesFromUsers)
                 .HasForeignKey(x => x.FromUserId)
