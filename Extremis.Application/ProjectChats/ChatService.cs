@@ -67,8 +67,8 @@ public class ChatService : IChatService
                 .Include(x => x.FromUser)
                 .Include(x => x.ToUser)
                 .OrderBy(x => x.CreateDateTime)
-                .Where(x => (x.FromUserId == contactId && x.ToUserId == userId) ||
-                            (x.ToUserId == userId && x.FromUserId == contactId))
+                .Where(x => ((x.FromUserId == contactId && x.ToUserId == userId) ||
+                            (x.FromUserId == userId && x.ToUserId == contactId)) && x.ProjectId == projectId)
                 .Select(x => new MessageDto()
                 {
                     Id = x.Id,
