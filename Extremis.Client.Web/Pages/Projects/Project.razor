@@ -61,8 +61,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="row g-0" style="height: 80vh!important; overflow-y:scroll">
-                    <div class="col-md-3" style="overflow-y: scroll">
+                <div class="d-flex g-0" style="height: 80vh!important; overflow-y:scroll">
+                    <div style="flex: 1;overflow-y: scroll">
                         <div class="border-end">
                             <div class="list-group list-group-flush" style="overflow-y: scroll; max-height: 12rem">
                                 @foreach (var member in _project.Members.Where(member => member.Id != _userId))
@@ -82,8 +82,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-9" style="overflow-y: scroll">
-                        <ProjectChat ProjectId="@Id.ToString()" ContactDto="@SelectedMember" />
+                    <div style="flex: 2; overflow-y: scroll">
+                        <ProjectChat ProjectId="@Id.ToString()" @bind-ContactDto="@SelectedMember" />
                     </div>
                 </div>
             </div>

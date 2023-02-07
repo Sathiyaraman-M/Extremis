@@ -3,7 +3,7 @@
 @using System.ComponentModel.Design
 @using Extremis.ProjectChats
 @inject ChatService ChatService
-<div class="d-flex flex-column justify-end" style="overflow-y: scroll">
+<div class="d-flex flex-column justify-end">
     <div class="border-bottom">
         <div class="card-body">
             <h2>@ContactDto?.UserName</h2>
@@ -20,11 +20,7 @@
                     <div class="d-flex flex-column w-100 p-3 mb-2 border rounded">
                         <div class="d-flex justify-content-between">
                             <div class="d-flex align-items-center">
-                                <h5>@messageDto.FromUserName</h5>
-                                @if (messageDto.FromUserId == _userId)
-                                {
-                                    <span class="status status-blue">You</span>
-                                }
+                                <span class="status status-blue">@messageDto.FromUserName</span>                                
                             </div>
                             <small class="ms-2">@messageDto.CreateDateTime.ToShortTimeString()</small>
                         </div>
@@ -61,6 +57,9 @@
     
     [Parameter]
     public ProjectMemberDto ContactDto { get; set; }
+    
+    [Parameter]
+    public EventCallback<ProjectMemberDto> ContactDtoChanged { get; set; }
 
     private string CurrentMessage { get; set; }
 
@@ -84,11 +83,8 @@
         }
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
-        _userId = user.FindFirstValue(JwtClaimTypes.Subject);
-        _userName = user.FindFirstValue(JwtClaimTypes.PreferredUserName);
         await LoadConversations();
         if (HubConnection == null)
         {
@@ -98,7 +94,7 @@
         {
             await HubConnection.StartAsync();
         }
-        HubConnection.On<MessageDto, string>("ReceiveMessage", (async (messageDto, userName) =>
+        HubConnection.On<MessageDto, string>("ReceiveMessage", (async (messageDto, userId) =>
         {
             if (((ContactDto.Id == messageDto.ToUserId && _userId == messageDto.FromUserId) || (ContactDto.Id == messageDto.FromUserId && _userId == messageDto.ToUserId)) && ProjectId == messageDto.ProjectId)
             {
@@ -114,7 +110,7 @@
                         ToUserId = ContactDto.Id,
                         ToUserName = ContactDto.UserName
                     });
-                    await HubConnection.SendAsync("ChatNotificationAsync", messageDto.Message, ContactDto.Id, _userId, ProjectId);
+                    await HubConnection.SendAsync("ChatNotificationAsync", messageDto.Message, messageDto.ToUserId, _userId, ProjectId);
                 }
                 else if (ContactDto.Id == messageDto.FromUserId && _userId == messageDto.ToUserId)
                 {
@@ -132,6 +128,13 @@
                 StateHasChanged();
             }
         }));
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await AuthenticationStateProvider.GetAuthenticationStateAsync()).User;
+        _userId = user.FindFirstValue(JwtClaimTypes.Subject);
+        _userName = user.FindFirstValue(JwtClaimTypes.PreferredUserName);
     }
 
     private async Task SubmitAsync()
@@ -156,9 +159,9 @@
                 ToUserName = ContactDto.UserName
             };
             await HubConnection.SendAsync("SendMessage", messageDto, ContactDto.Id);
-            Conversations.Add(messageDto);
+            //Conversations.Add(messageDto);
             CurrentMessage = string.Empty;
-            //await LoadConversations();
+            await LoadConversations();
         }
     }
 }
