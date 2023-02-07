@@ -160,12 +160,16 @@ public class ProposalService : IProposalService
                 return await Result<bool>.SuccessAsync(false);
             var proposal = await _unitOfWork.GetRepository<Proposal>().Entities
                 .FirstOrDefaultAsync(x => x.Id == id);
+            if (proposal == null)
+            {
+                throw new Exception("Proposal Not Found!");
+            }
             var project = await _unitOfWork.GetRepository<Project>().Entities
                 .Include(x => x.Members)
                 .FirstOrDefaultAsync(x => proposal.ProjectId == userId);
             if (project == null)
             {
-                throw new Exception("Proposal Not Found!");
+                throw new Exception("Project Not Found!");
             }
             return await Result<bool>.SuccessAsync(project.Members.All(x => x.MemberId != userId));
             

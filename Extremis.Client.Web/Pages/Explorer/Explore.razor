@@ -138,9 +138,17 @@
              {
                  var status = await ProposalService.CheckAppliedStatus(proposal.Id);
                  if (status.Succeeded)
+                 {
                      proposal.Applied = status.Data;
+                 }
                  else
+                 {
                      proposal.NA = true;
+                     foreach (var message in status.Messages)
+                     {
+                         Toast.Add("Error", message, Severity.Error);
+                     }
+                 }
              }
          }
          else
